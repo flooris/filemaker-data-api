@@ -3,21 +3,28 @@
 
 namespace Flooris\FileMakerDataApi\HttpClient;
 
-use Flooris\FileMakerDataApi\Client;
+use Flooris\FileMakerDataApi\Client as FmClient;
 use GuzzleHttp\RequestOptions;
+use GuzzleHttp\Client;
 
 class Connector
 {
     /** @var string */
-    private $configHost;
+    private string $configHost;
+    private string $baseUrl;
+    private ?Client $guzzleClient = null;
 
-    private $guzzleClient;
-
-    public function __construct($configHost)
+    public function __construct(string $configHost)
     {
         $this->configHost   = $configHost;
-        $this->guzzleClient = new \GuzzleHttp\Client([
-            'base_uri' => $this->getBaseUri(),
+        $this->baseUrl      = $this->getBaseUri();
+
+        if (! $this->baseUrl) {
+            return;
+        }
+
+        $this->guzzleClient = new Client([
+            'base_uri' => $this->baseUrl,
         ]);
     }
 
@@ -49,7 +56,7 @@ class Connector
                 'Content-Type'  => 'application/json',
                 'Accept'        => 'application/json',
                 'Authorization' => $this->getAuthorizationHeaderValue(),
-                'User-Agent'    => Client::USER_AGENT,
+                'User-Agent'    => FmClient::USER_AGENT,
             ],
             RequestOptions::QUERY   => $query,
         ];
@@ -61,13 +68,21 @@ class Connector
         return $this->guzzleClient->request($method, $uri, $options);
     }
 
-    private function getBaseUri()
+    private function getBaseUri(): string
     {
-        $port = config(sprintf('filemaker.%s.port', $this->configHost));
+        $port     = config(sprintf('filemaker.%s.port', $this->configHost));
+        $protocol = config(sprintf('filemaker.%s.protocol', $this->configHost));
+        $host     = config(sprintf('filemaker.%s.hostname', $this->configHost));
+
+        if (! $protocol ||
+            ! $host
+        ) {
+            return '';
+        }
 
         return sprintf('%s%s%s/',
-            config(sprintf('filemaker.%s.protocol', $this->configHost)),
-            config(sprintf('filemaker.%s.hostname', $this->configHost)),
+            $protocol,
+            $host,
             $port ? ":{$port}" : '',
         );
     }
