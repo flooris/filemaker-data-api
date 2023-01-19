@@ -1,3 +1,13 @@
+# 2.0.2
+Fixed retrieval of container field data, with session token.
+
+* Added `getDataContainerContent` to the `Connector`
+* Added `getDataContainerContent` to the `Client`
+* Added `getDataContainerContent` to the `FmBaseRepository`
+* **Breaking!** Renamed `getDataContainerUrlWithToken` to `getDataContainerToken` on `FmBaseRepository`
+
+# 2.0.1
+Lowered dependency version guzzlehttp/guzzle to 7.4.5
 
 # 2.0.0
 Major upgrade FileMaker Data API to 2.0.0

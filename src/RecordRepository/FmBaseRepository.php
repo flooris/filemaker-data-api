@@ -3,6 +3,8 @@
 namespace Flooris\FileMakerDataApi\RecordRepository;
 
 use Flooris\FileMakerDataApi\Client;
+use Psr\Http\Message\StreamInterface;
+use GuzzleHttp\Exception\GuzzleException;
 use Psr\SimpleCache\InvalidArgumentException;
 
 abstract class FmBaseRepository
@@ -126,9 +128,17 @@ abstract class FmBaseRepository
         return $this->totalRecordCount;
     }
 
-    public function getDataContainerUrlWithToken(string $dataContainerObjectUrl): ?string
+    public function getDataContainerToken(string $dataContainerObjectUrl): ?string
     {
         return $this->fmClient->getDataContainerToken($dataContainerObjectUrl);
+    }
+
+    /**
+     * @throws GuzzleException
+     */
+    public function getDataContainerContent(string $dataContainerObjectUrl, string $dataContainerToken): ?StreamInterface
+    {
+        return $this->fmClient->getDataContainerContent($dataContainerObjectUrl, $dataContainerToken);
     }
 
 

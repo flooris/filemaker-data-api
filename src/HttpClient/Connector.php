@@ -3,6 +3,8 @@
 
 namespace Flooris\FileMakerDataApi\HttpClient;
 
+use Illuminate\Support\Facades\Log;
+use Psr\Http\Message\StreamInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -75,6 +77,28 @@ class Connector
         } catch (GuzzleException $e) {
             return null;
         }
+    }
+
+    /**
+     * @throws GuzzleException
+     */
+    public function getDataContainerContent(string $dataContainerObjectUrl, string $dataContainerToken): ?StreamInterface
+    {
+        $options = [
+            RequestOptions::HEADERS => [
+                'Cookie' => [
+                    $dataContainerToken,
+                ],
+            ],
+        ];
+
+        $client = new Client([
+            'base_uri' => $dataContainerObjectUrl,
+        ]);
+
+        $response = $client->request('GET', '', $options);
+
+        return $response->getBody();
     }
 
 

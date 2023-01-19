@@ -5,6 +5,7 @@ namespace Flooris\FileMakerDataApi;
 
 
 use GuzzleHttp\RequestOptions;
+use Psr\Http\Message\StreamInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\SimpleCache\InvalidArgumentException;
 use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
@@ -110,5 +111,13 @@ class Client
         $cacheKey = $this->getSessionTokenCacheKey();
 
         $this->cache->set($cacheKey, $sessionToken, 60 * 15);
+    }
+
+    /**
+     * @throws GuzzleException
+     */
+    public function getDataContainerContent(string $dataContainerObjectUrl, string $dataContainerToken): ?StreamInterface
+    {
+        return $this->connector->getDataContainerContent($dataContainerObjectUrl, $dataContainerToken);
     }
 }
