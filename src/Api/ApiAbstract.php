@@ -7,144 +7,122 @@ namespace Flooris\FileMakerDataApi\Api;
 use Exception;
 use Flooris\FileMakerDataApi\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\SimpleCache\InvalidArgumentException;
 
 abstract class ApiAbstract
 {
     const ERROR_INVALID_FILEMAKER_DATA_API_TOKEN = 952;
 
     /**
-     * The client instance.
-     *
-     * @var Client
-     */
-    private $client;
-
-    /**
-     * The layout name.
-     *
-     * @var string|null
-     */
-    private $layoutName;
-
-    /**
      * This will determine if the database will be included in the uri. Most requests will need this, but a few do not.
      *
      * @var bool
      */
-    protected $includeDatabase = true;
+    protected bool $includeDatabase = true;
 
     /**
      * This will determine if the layout will be included in the uri. Most requests will need this, but a few do not.
      *
      * @var bool
      */
-    protected $includeLayout = true;
+    protected bool $includeLayout = true;
 
-    /**
-     * Create a new API instance.
-     *
-     * @param Client      $client
-     * @param string|null $layoutName
-     */
-    public function __construct(Client $client, $layoutName = null)
+    public function __construct(
+        public Client   $client,
+        private ?string $layoutName = null
+    )
     {
-        $this->layoutName = $layoutName;
-        $this->client     = $client;
     }
 
     /**
-     * @param       $uri
-     * @param array $uriValues
-     * @param array $query
-     * @return object
-     * @throws Exception
+     * @throws Exception // ToDo: Refactor to specific custom exception
+     * @throws InvalidArgumentException
      */
-    protected function get($uri, $uriValues = [], $query = [])
+    protected function get(string $uri, array $uriValues = [], array $query = []): object
     {
         try {
-            $response = $this->client->connector->get($this->prepareUri($uri, $uriValues), $query);
+            $preparedUri  = $this->prepareUri($uri, $uriValues);
+            $sessionToken = $this->client->getSessionTokenFromCache();
+
+            $response = $this->client->connector->get($preparedUri, $sessionToken, $query);
         } catch (GuzzleException $e) {
             $this->handleException($e);
 
             return $this->get($uri, $uriValues);
         }
 
-        $this->extendSessionToken();
+        $this->client->setOrExtendSessionToken();
 
-        return json_decode($response->getBody())->response;
+        return json_decode($response->getBody(), false)->response;
     }
 
     /**
-     * @param       $uri
-     * @param array $uriValues
-     * @param array $parameters
-     * @return object
      * @throws Exception
+     * @throws InvalidArgumentException
      */
-    protected function post($uri, $uriValues = [], $parameters = [])
+    protected function post(string $uri, array $uriValues = [], array $parameters = []): object
     {
         try {
-            $response = $this->client->connector->post($this->prepareUri($uri, $uriValues), $parameters);
+            $preparedUri  = $this->prepareUri($uri, $uriValues);
+            $sessionToken = $this->client->getSessionTokenFromCache();
+
+            $response = $this->client->connector->post($preparedUri, $sessionToken, $parameters);
         } catch (GuzzleException $e) {
             $this->handleException($e);
 
             return $this->post($uri, $uriValues, $parameters);
         }
 
-        $this->extendSessionToken();
+        $this->client->setOrExtendSessionToken();
 
-        return json_decode($response->getBody())->response;
+        return json_decode($response->getBody(), false)->response;
     }
 
     /**
-     * @param       $uri
-     * @param array $uriValues
-     * @param array $parameters
-     * @return object
      * @throws Exception
+     * @throws InvalidArgumentException
      */
-    protected function patch($uri, $uriValues = [], $parameters = [])
+    protected function patch(string $uri, array $uriValues = [], array $parameters = []): object
     {
         try {
-            $response = $this->client->connector->patch($this->prepareUri($uri, $uriValues), $parameters);
+            $preparedUri  = $this->prepareUri($uri, $uriValues);
+            $sessionToken = $this->client->getSessionTokenFromCache();
+
+            $response = $this->client->connector->patch($preparedUri, $sessionToken, $parameters);
         } catch (GuzzleException $e) {
             $this->handleException($e);
 
             return $this->patch($uri, $uriValues, $parameters)->response;
         }
 
-        $this->extendSessionToken();
+        $this->client->setOrExtendSessionToken();
 
-        return json_decode($response->getBody())->response;
+        return json_decode($response->getBody(), false)->response;
     }
 
     /**
-     * @param       $uri
-     * @param array $uriValues
-     * @return object
      * @throws Exception
+     * @throws InvalidArgumentException
      */
-    protected function delete($uri, $uriValues = [])
+    protected function delete(string $uri, array $uriValues = []): object
     {
         try {
-            $response = $this->client->connector->delete($this->prepareUri($uri, $uriValues));
+            $preparedUri  = $this->prepareUri($uri, $uriValues);
+            $sessionToken = $this->client->getSessionTokenFromCache();
+
+            $response = $this->client->connector->delete($preparedUri, $sessionToken);
         } catch (GuzzleException $e) {
             $this->handleException($e);
 
             return $this->delete($uri, $uriValues);
         }
 
-        $this->extendSessionToken();
+        $this->client->setOrExtendSessionToken();
 
-        return json_decode($response->getBody())->response;
+        return json_decode($response->getBody(), false)->response;
     }
 
-    /**
-     * @param       $uri
-     * @param array $uriValues
-     * @return string
-     */
-    private function prepareUri($uri, $uriValues = [])
+    private function prepareUri(string $uri, array $uriValues = []): string
     {
         $filledUri = $uri;
         foreach ($uriValues as $value) {
@@ -158,52 +136,36 @@ abstract class ApiAbstract
             $filledUri);
     }
 
-    /**
-     * @return string
-     */
-    private function getVersionUri()
+    private function getVersionUri(): string
     {
         return sprintf('/fmi/data/%s/', config(sprintf('filemaker.%s.version', $this->getConfigHost())));
     }
 
-    /**
-     * @return string
-     */
-    private function getDatabaseUri()
+    private function getDatabaseUri(): string
     {
         return sprintf('databases/%s/', config(sprintf('filemaker.%s.database', $this->getConfigHost())));
     }
 
-    /**
-     * @return string
-     */
-    private function getLayoutUri()
+    private function getLayoutUri(): string
     {
         return sprintf('layouts/%s/', $this->getLayoutName());
     }
 
-    /**
-     * @return string|null
-     */
     public function getLayoutName(): ?string
     {
         return $this->layoutName;
     }
 
-    /**
-     * @param string|null $layoutName
-     */
     public function setLayoutName(?string $layoutName): void
     {
         $this->layoutName = $layoutName;
     }
 
     /**
-     * @param GuzzleException $e
-     * @return null
      * @throws Exception
+     * @throws InvalidArgumentException
      */
-    private function handleException(GuzzleException $e)
+    private function handleException(GuzzleException $e): void
     {
         $response     = $e->getResponse();
         $responseData = json_decode($response->getBody());
@@ -215,30 +177,17 @@ abstract class ApiAbstract
         $firstErrorMessage = $responseData->messages[0];
 
         if ((int)$firstErrorMessage->code === self::ERROR_INVALID_FILEMAKER_DATA_API_TOKEN) {
-            cache()->delete(sprintf('filemaker.%s.session_token', $this->getConfigHost()));
+            $this->client->deleteSessionToken();
             $this->client->validateSession();
 
-            return null;
+            return;
         }
 
         throw new Exception($firstErrorMessage->message, $firstErrorMessage->code, $e);
     }
 
-    /**
-     * @return mixed|string
-     */
-    public function getConfigHost()
+    public function getConfigHost(): string
     {
         return $this->client->configHost;
-    }
-
-    public function getCacheKey()
-    {
-        return sprintf('filemaker.%s.session_token', $this->getConfigHost());
-    }
-
-    public function extendSessionToken()
-    {
-        cache()->set($this->getCacheKey(), cache($this->getCacheKey()), 60 * 15);
     }
 }

@@ -2,29 +2,18 @@
 
 namespace Flooris\FileMakerDataApi;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 
 class FileMakerDataApiServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
+    public function boot(): void
     {
         $this->publishes([
             __DIR__.'/../config/filemaker.php' => config_path('filemaker.php'),
         ], 'filemaker-data-api');
     }
 
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
+    public function register(): void
     {
         $this->mergeConfigFrom(
             __DIR__.'/../config/filemaker.php', 'filemaker'

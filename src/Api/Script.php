@@ -5,16 +5,14 @@ namespace Flooris\FileMakerDataApi\Api;
 
 
 use Exception;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class Script extends ApiAbstract
 {
     /**
-     * @param string $scriptName
-     * @param string $scriptParameter
-     * @return object
-     * @throws Exception
+     * @throws Exception|InvalidArgumentException
      */
-    public function runScript($scriptName, $scriptParameter = '')
+    public function runScript(string $scriptName, string $scriptParameter = ''): object
     {
         return $this->get('script/%s', [$scriptName], ['script.param' => $scriptParameter]);
     }
