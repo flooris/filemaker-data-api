@@ -1,6 +1,6 @@
 
-# v2.0.0
-Major upgrade FileMaker Data API to v2.0.0
+# 2.0.0
+Major upgrade FileMaker Data API to 2.0.0
 
 Improvements:
 * Upgraded to PHP 8.0
@@ -13,6 +13,7 @@ Improvements:
 * Fixed a BUG when the FileMaker config values are not configured yet (empty)
 * Added the ability to consume container data with Session Token security
 * Added the custom exception: FilemakerDataApiConfigInvalidException when the filemaker config has invalid values
+* Upgraded dependency: `guzzlehttp/guzzle` from `7.0.0` to `7.5.0`
 
 # dev-master
 Released the 17th of September 2020
