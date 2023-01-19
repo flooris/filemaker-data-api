@@ -3,34 +3,35 @@
 namespace Flooris\FileMakerDataApi\Api;
 
 use Exception;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class Authentication extends ApiAbstract
 {
-    protected $includeLayout = false;
+    protected bool $includeLayout = false;
 
     /**
-     * @return string
      * @throws Exception
+     * @throws InvalidArgumentException
      */
-    public function login()
+    public function login(): string
     {
         $response     = $this->post('sessions');
         $sessionToken = $response->token;
 
-        cache()->set($this->getCacheKey(), $sessionToken, 60 * 15);
+        $this->client->setOrExtendSessionToken($sessionToken);
 
         return $sessionToken;
     }
 
     /**
-     * @return bool
      * @throws Exception
+     * @throws InvalidArgumentException
      */
-    public function logout()
+    public function logout(): bool
     {
-        $this->delete('sessions/%s', [cache($this->getCacheKey())]);
+        $this->delete('sessions/%s', [$this->client->getSessionTokenFromCache()]);
 
-        cache()->forget($this->getCacheKey());
+        $this->client->deleteSessionToken();
 
         return true;
     }

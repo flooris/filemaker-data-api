@@ -5,17 +5,15 @@ namespace Flooris\FileMakerDataApi\Api;
 
 
 use Exception;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class Record extends ApiAbstract
 {
-
     /**
-     * @param array $fieldData
-     *
-     * @return object
      * @throws Exception
+     * @throws InvalidArgumentException
      */
-    public function createNewRecord($fieldData)
+    public function createNewRecord(array $fieldData): object
     {
         return $this->post('records', [], [
             'fieldData' => $fieldData,
@@ -23,13 +21,10 @@ class Record extends ApiAbstract
     }
 
     /**
-     * @param int   $recordId
-     * @param array $fieldData
-     *
-     * @return object
      * @throws Exception
+     * @throws InvalidArgumentException
      */
-    public function editRecord($recordId, $fieldData)
+    public function editRecord(int $recordId, array $fieldData): object
     {
         $parameters = [
             'fieldData' => $fieldData,
@@ -39,34 +34,28 @@ class Record extends ApiAbstract
     }
 
     /**
-     * @param int $recordId
-     *
-     * @return object
      * @throws Exception
+     * @throws InvalidArgumentException
      */
-    public function deleteRecord($recordId)
+    public function deleteRecord(int $recordId): object
     {
         return $this->delete('records/%s', [$recordId]);
     }
 
     /**
-     * @param int $recordId
-     *
-     * @return object
      * @throws Exception
+     * @throws InvalidArgumentException
      */
-    public function duplicateRecord($recordId)
+    public function duplicateRecord(int $recordId): object
     {
         return $this->post('records/%s', [$recordId]);
     }
 
     /**
-     * @param int $recordId
-     *
-     * @return object
      * @throws Exception
+     * @throws InvalidArgumentException
      */
-    public function singleRecord($recordId)
+    public function singleRecord(int $recordId): object
     {
         return $this->get('records/%s', [$recordId]);
     }
@@ -74,18 +63,13 @@ class Record extends ApiAbstract
     /**
      * Get records, default limit is 100 when called without offset or limit.
      *
-     * @param int        $starting_record
-     * @param int        $limit
-     * @param array|null $sort , example: ['fieldName' => 'NAME', 'sortOrder' => 'ascend']
-     *
-     * @return object
-     * @throws Exception
+     * @throws Exception|InvalidArgumentException
      * @see  https://fmhelp.filemaker.com/docs/18/en/dataapi/#work-with-records_get-records
      */
-    public function records($starting_record = 1, $limit = 100, $sort = null)
+    public function records(int $startingRecord = 1, int $limit = 100, array $sort = null): object
     {
         $query = [
-            '_offset' => $starting_record,
+            '_offset' => $startingRecord,
             '_limit'  => $limit,
         ];
 
@@ -103,16 +87,10 @@ class Record extends ApiAbstract
     /**
      * Perform a search for a record / multiple records based on specified in the query
      *
-     * @param array      $query
-     * @param int        $offset
-     * @param int        $limit
-     * @param array|null $sort
-     *
-     * @return object
-     * @throws Exception
+     * @throws Exception|InvalidArgumentException
      * @see https://fmhelp.filemaker.com/docs/18/en/dataapi/#perform-a-find-request
      */
-    public function findRecords($query, $offset = 1, $limit = 100, $sort = null)
+    public function findRecords(array $query, int $offset = 1, int $limit = 100, array $sort = null): object
     {
         if (! isset($query[0]) || gettype($query[0]) !== 'array') {
             $query = [$query]; // This is required as FileMaker expects an array
