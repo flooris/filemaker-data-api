@@ -167,3 +167,4 @@ $brandRepository->each(function(FmBrandObject $fmBrandObject) {
 ToDo's:
 * Tests
 * Custom exceptions
+* Fix missing config helper without Laravel, for example in FmBaseObject

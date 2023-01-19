@@ -44,18 +44,14 @@ abstract class FmBaseObject
      */
     public function getValueAsBoolean(string $fieldName): bool
     {
-        $value = strtolower($this->getValue($fieldName));
-
-        // ToDo: Get match values from Laravel package config file (only the boolean: true values)
+        $value      = strtolower($this->getValue($fieldName));
         $trueValues = config('filemaker.settings.boolean_true_values');
+
         if (! is_array($trueValues)) {
             throw new FilemakerDataApiConfigInvalidException("Package config: 'filemaker.settings.boolean_true_values' is invalid");
         }
 
-        return match ($value) {
-            'true', '1', 'yes', 'y', 'j', 'ja' => true,
-            default => false
-        };
+        return in_array($value, $trueValues);
     }
 
     public function getPortalArray(string $fieldName): array

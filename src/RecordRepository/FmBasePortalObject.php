@@ -2,6 +2,8 @@
 
 namespace Flooris\FileMakerDataApi\RecordRepository;
 
+use Flooris\FileMakerDataApi\Exceptions\FilemakerDataApiConfigInvalidException;
+
 abstract class FmBasePortalObject
 {
     public int $recordId;
@@ -36,11 +38,13 @@ abstract class FmBasePortalObject
 
     public function getValueAsBoolean(string $fieldName): bool
     {
-        $value = strtolower($this->getValue($fieldName));
+        $value      = strtolower($this->getValue($fieldName));
+        $trueValues = config('filemaker.settings.boolean_true_values');
 
-        return match ($value) {
-            'true', '1', 'yes', 'y', 'j', 'ja' => true,
-            default => false
-        };
+        if (! is_array($trueValues)) {
+            throw new FilemakerDataApiConfigInvalidException("Package config: 'filemaker.settings.boolean_true_values' is invalid");
+        }
+
+        return in_array($value, $trueValues);
     }
 }
