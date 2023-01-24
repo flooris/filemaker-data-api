@@ -33,7 +33,9 @@ class Client
             $this->connector = new Connector($configHost, $cache);
         }
 
-        $this->validateSession();
+        if ($this->connector->hasValidConnectionCredentials()) {
+            $this->validateSession();
+        }
     }
 
     public function record($layout = null): Record

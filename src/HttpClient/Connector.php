@@ -12,6 +12,8 @@ use Psr\SimpleCache\InvalidArgumentException;
 use Flooris\FileMakerDataApi\Client as FmClient;
 use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Client;
+use Flooris\FileMakerDataApi\Exceptions\FilemakerDataApiConfigHostMissingException;
+use Flooris\FileMakerDataApi\Exceptions\FilemakerDataApiConfigInvalidConnectionException;
 
 class Connector
 {
@@ -156,5 +158,42 @@ class Connector
         }
 
         return '';
+    }
+
+    public function hasValidConnectionCredentials(): bool
+    {
+        try {
+            $this->evaluateConnectionConfig();
+        } catch (FilemakerDataApiConfigInvalidConnectionException|FilemakerDataApiConfigHostMissingException $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @throws FilemakerDataApiConfigInvalidConnectionException|FilemakerDataApiConfigHostMissingException
+     */
+    public function evaluateConnectionConfig(bool $throwException = true): void
+    {
+        $config = config(sprintf('filemaker.%s', $this->configHost));
+
+        if (! $config) {
+            throw new FilemakerDataApiConfigHostMissingException($this->configHost);
+        }
+
+        $nullableConfigKeys = [
+            'port',
+        ];
+
+        foreach ($config as $configKey => $configValue) {
+            if (in_array($configKey, $nullableConfigKeys)) {
+                continue;
+            }
+
+            if (! $configValue && $throwException) {
+                throw new FilemakerDataApiConfigInvalidConnectionException($configKey, $configValue);
+            }
+        }
     }
 }
