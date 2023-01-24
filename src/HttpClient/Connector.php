@@ -3,7 +3,6 @@
 
 namespace Flooris\FileMakerDataApi\HttpClient;
 
-use Illuminate\Support\Facades\Log;
 use Psr\Http\Message\StreamInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
@@ -192,7 +191,7 @@ class Connector
             }
 
             if (! $configValue && $throwException) {
-                throw new FilemakerDataApiConfigInvalidConnectionException($configKey, $configValue);
+                throw new FilemakerDataApiConfigInvalidConnectionException("The key {$configKey} has no value");
             }
         }
     }
