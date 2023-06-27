@@ -3,6 +3,7 @@ Improvements:
 * Added `$guzzleConfig` to the `Connector`constructor
 * Added `$guzzleConfig` to the `Client`constructor
 * Added `illuminate/config && illuminate/support` version 10 in the `Composer.json`
+* updated setFindQueryAll in FmBaseRepository
 
 
 # 2.0.2
