@@ -116,9 +116,11 @@ abstract class FmBaseRepository
         ];
     }
 
-    public function setFindQueryAll(array $findQuery): void
+    public function setFindQueryAll(array $findQuery): self
     {
         $this->findQueryAll = $findQuery;
+
+        return $this;
     }
 
     public function getTotalRecordCount(): int

@@ -3,14 +3,14 @@
 
 namespace Flooris\FileMakerDataApi\HttpClient;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\StreamInterface;
-use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
 use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Exception\GuzzleException;
 use Psr\SimpleCache\InvalidArgumentException;
 use Flooris\FileMakerDataApi\Client as FmClient;
-use GuzzleHttp\RequestOptions;
-use GuzzleHttp\Client;
+use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
 use Flooris\FileMakerDataApi\Exceptions\FilemakerDataApiConfigHostMissingException;
 use Flooris\FileMakerDataApi\Exceptions\FilemakerDataApiConfigInvalidConnectionException;
 
@@ -21,7 +21,8 @@ class Connector
 
     public function __construct(
         private string                     $configHost,
-        protected CacheRepositoryInterface $cache
+        protected CacheRepositoryInterface $cache,
+        array  $guzzleConfig  = []
     )
     {
         $this->baseUrl = $this->getBaseUri();
@@ -30,9 +31,9 @@ class Connector
             return;
         }
 
-        $this->guzzleClient = new Client([
+        $this->guzzleClient = new Client(array_merge([
             'base_uri' => $this->baseUrl,
-        ]);
+          ], $guzzleConfig));
     }
 
     public function get(string $uri, ?string $sessionToken = null, array $query = []): ResponseInterface

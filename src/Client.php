@@ -4,17 +4,16 @@
 namespace Flooris\FileMakerDataApi;
 
 
-use GuzzleHttp\RequestOptions;
+use Illuminate\Support\Str;
 use Psr\Http\Message\StreamInterface;
-use GuzzleHttp\Exception\GuzzleException;
-use Psr\SimpleCache\InvalidArgumentException;
-use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
-use Flooris\FileMakerDataApi\Api\Authentication;
-use Flooris\FileMakerDataApi\Api\MetaData;
 use Flooris\FileMakerDataApi\Api\Record;
 use Flooris\FileMakerDataApi\Api\Script;
+use GuzzleHttp\Exception\GuzzleException;
+use Flooris\FileMakerDataApi\Api\MetaData;
+use Psr\SimpleCache\InvalidArgumentException;
+use Flooris\FileMakerDataApi\Api\Authentication;
 use Flooris\FileMakerDataApi\HttpClient\Connector;
-use Illuminate\Support\Str;
+use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
 
 class Client
 {
@@ -26,11 +25,12 @@ class Client
     public function __construct(
         protected CacheRepositoryInterface $cache,
         public string                      $configHost = "default",
-        public ?Connector                  $connector = null
+        public ?Connector                  $connector = null,
+        array                              $guzzleConfig = []
     )
     {
         if ($this->connector === null) {
-            $this->connector = new Connector($configHost, $cache);
+            $this->connector = new Connector($configHost, $cache, $guzzleConfig);
         }
 
         if ($this->connector->hasValidConnectionCredentials()) {
