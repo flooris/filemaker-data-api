@@ -51,13 +51,13 @@ abstract class FmBaseRepository
         return null;
     }
 
-    public function findRecords(array $findQuery, int $offset = 1, int $limit = 100): ?array
+    public function findRecords(array $findQuery, int $offset = 1, int $limit = 100, array $sort = []): ?array
     {
         try {
             $result = $this
                 ->fmClient
                 ->record($this->fmLayoutName)
-                ->findRecords($findQuery, $offset, $limit);
+                ->findRecords($findQuery, $offset, $limit, $sort);
         } catch (\Exception|InvalidArgumentException $exception) {
             $this->findRequestFailed = true;
             $this->lastException     = $exception;
