@@ -1,3 +1,7 @@
+
+# 2.2.0
+Improvements:
+* Added `$sort` parameter to findRecords on `FmBaseRepository`
 # 2.1.0
 Improvements:
 * Added `$guzzleConfig` to the `Connector`constructor
