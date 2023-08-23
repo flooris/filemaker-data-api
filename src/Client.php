@@ -76,6 +76,10 @@ class Client
         }
     }
 
+    private function sessionTTL(): int {
+        return (int)config('filemaker.settings.session_ttl');
+    }
+
     /**
      * @throws InvalidArgumentException
      */
@@ -112,7 +116,7 @@ class Client
 
         $cacheKey = $this->getSessionTokenCacheKey();
 
-        $this->cache->set($cacheKey, $sessionToken, 60 * 15);
+        $this->cache->set($cacheKey, $sessionToken, $this->sessionTTL());
     }
 
     /**
