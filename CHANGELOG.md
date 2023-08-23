@@ -1,4 +1,10 @@
-
+# 2.2.1
+Improvements:
+* Added control over date formatting expectations and the TTL of a session token through the config
+* Added function on the client for retrieving TTL value for the token
+# 2.2.0
+Improvements:
+* Added `$sort` parameter to findRecords on `FmBaseRepository`
 # 2.2.0
 Improvements:
 * Added `$sort` parameter to findRecords on `FmBaseRepository`
