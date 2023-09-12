@@ -82,19 +82,16 @@ class Connector
      */
     public function getDataContainerContent(string $dataContainerObjectUrl, string $dataContainerToken): ?StreamInterface
     {
-        $options = [
+
+        $options = array_merge([
             RequestOptions::HEADERS => [
                 'Cookie' => [
                     $dataContainerToken,
                 ],
             ],
-        ];
+        ], $this->guzzleConfig);
 
-        $client = new Client([
-            'base_uri' => $dataContainerObjectUrl,
-        ]);
-
-        $response = $client->request('GET', '', $options);
+        $response = $this->guzzleClient->request('GET', $dataContainerObjectUrl, $options);
 
         return $response->getBody();
     }
