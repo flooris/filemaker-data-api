@@ -22,7 +22,7 @@ class Connector
     public function __construct(
         private string                     $configHost,
         protected CacheRepositoryInterface $cache,
-        array  $guzzleConfig  = []
+        private array  $guzzleConfig  = []
     )
     {
         $this->baseUrl = $this->getBaseUri();
@@ -58,16 +58,12 @@ class Connector
 
     public function getDataContainerToken(string $dataContainerObjectUrl): ?string
     {
-        $options = [
+        $options = array_merge([
             RequestOptions::ALLOW_REDIRECTS => false,
-        ];
+        ], $this->guzzleConfig);
 
         try {
-            $client = new Client([
-                'base_uri' => $dataContainerObjectUrl,
-            ]);
-
-            $response     = $client->request('GET', '', $options);
+            $response     = $this->guzzleClient->request('GET', $dataContainerObjectUrl, $options);
             $cookieHeader = $response->getHeader('Set-Cookie');
 
             if ($sessionToken = reset($cookieHeader)) {
