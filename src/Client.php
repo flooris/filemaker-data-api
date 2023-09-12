@@ -98,7 +98,7 @@ class Client
 
     public function getSessionTokenCacheKey(): string
     {
-        return sprintf('filemaker.%s.session_token', $this->configHost);;
+        return sprintf('filemaker.%s.session_token', $this->configHost);
     }
 
     /**
