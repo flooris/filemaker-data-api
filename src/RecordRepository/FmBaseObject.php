@@ -2,21 +2,22 @@
 
 namespace Flooris\FileMakerDataApi\RecordRepository;
 
+use stdClass;
 use Flooris\FileMakerDataApi\Exceptions\FilemakerDataApiConfigInvalidConnectionException;
 
 abstract class FmBaseObject
 {
     public int $recordId;
     public int $modId;
-    public ?\stdClass $fieldData;
-    public ?\stdClass $portalData;
+    public ?stdClass $fieldData;
+    public ?stdClass $portalData;
 
     /**
      * ToDo: Move this abstract class to the Laravel package
      */
 
     public function __construct(
-        \stdClass                $fmResultObject,
+        stdClass                $fmResultObject,
         public ?FmBaseRepository $repository = null,
     )
     {

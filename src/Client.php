@@ -4,6 +4,7 @@
 namespace Flooris\FileMakerDataApi;
 
 
+use Exception;
 use Illuminate\Support\Str;
 use Psr\Http\Message\StreamInterface;
 use Flooris\FileMakerDataApi\Api\Record;
@@ -65,7 +66,7 @@ class Client
 
     /**
      * @throws InvalidArgumentException
-     * @throws \Exception
+     * @throws Exception
      */
     public function validateSession(): void
     {
@@ -76,7 +77,8 @@ class Client
         }
     }
 
-    private function sessionTTL(): int {
+    private function sessionTTL(): int
+    {
         return (int)config('filemaker.settings.session_ttl');
     }
 

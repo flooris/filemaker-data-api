@@ -22,7 +22,7 @@ class Connector
     public function __construct(
         private string                     $configHost,
         protected CacheRepositoryInterface $cache,
-        private array  $guzzleConfig  = []
+        private array                      $guzzleConfig = []
     )
     {
         $this->baseUrl = $this->getBaseUri();
@@ -33,7 +33,7 @@ class Connector
 
         $this->guzzleClient = new Client(array_merge([
             'base_uri' => $this->baseUrl,
-          ], $guzzleConfig));
+        ], $guzzleConfig));
     }
 
     public function get(string $uri, ?string $sessionToken = null, array $query = []): ResponseInterface

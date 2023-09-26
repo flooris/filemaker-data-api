@@ -2,7 +2,9 @@
 
 namespace Flooris\FileMakerDataApi\Exceptions;
 
-class FilemakerDataApiConfigInvalidException extends \Exception
+use Exception;
+
+class FilemakerDataApiConfigInvalidException extends Exception
 {
     public function __construct(string $message = "", int $code = 0, ?Throwable $previous = null)
     {
