@@ -15,6 +15,6 @@ return [
     'settings' => [
         'boolean_true_values' => ['true', '1', 'yes', 'y', 'j', 'ja'],
         'date_format'         => env('FM_DATE_FORMAT', 'm-d-Y'),
-        'session_ttl'         => env('FM_SESSION_TTL', 900),
+        'session_ttl'         => env('FM_SESSION_TTL', 400),
     ],
 ];
