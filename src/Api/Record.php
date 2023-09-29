@@ -73,8 +73,8 @@ class Record extends ApiAbstract
             '_limit'  => $limit,
         ];
 
-        if (is_array($sort) && !empty($sort)) {
-            if (! isset($sort[0]) || !is_array($sort[0])) {
+        if (is_array($sort) && ! empty($sort)) {
+            if (! isset($sort[0]) || ! is_array($sort[0])) {
                 $sort = [$sort]; // This is required as FileMaker expects an array
             }
 
@@ -102,8 +102,8 @@ class Record extends ApiAbstract
             'offset' => $offset,
         ];
 
-        if (is_array($sort) && !empty($sort)) {
-            if (! isset($sort[0]) || !is_array($sort[0])) {
+        if (is_array($sort) && ! empty($sort)) {
+            if (! isset($sort[0]) || ! is_array($sort[0])) {
                 $sort = [$sort]; // This is required as FileMaker expects an array
             }
 

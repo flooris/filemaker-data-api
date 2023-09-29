@@ -4,6 +4,7 @@
 namespace Flooris\FileMakerDataApi;
 
 
+use Exception;
 use Illuminate\Support\Str;
 use Psr\Http\Message\StreamInterface;
 use Flooris\FileMakerDataApi\Api\Record;
@@ -65,7 +66,7 @@ class Client
 
     /**
      * @throws InvalidArgumentException
-     * @throws \Exception
+     * @throws Exception
      */
     public function validateSession(): void
     {
@@ -74,6 +75,11 @@ class Client
         if (! $sessionToken || Str::length($sessionToken) < 20) {
             $this->authentication()->login();
         }
+    }
+
+    private function sessionTTL(): int
+    {
+        return (int)config('filemaker.settings.session_ttl');
     }
 
     /**
@@ -94,7 +100,7 @@ class Client
 
     public function getSessionTokenCacheKey(): string
     {
-        return sprintf('filemaker.%s.session_token', $this->configHost);;
+        return sprintf('filemaker.%s.session_token', $this->configHost);
     }
 
     /**
@@ -112,7 +118,7 @@ class Client
 
         $cacheKey = $this->getSessionTokenCacheKey();
 
-        $this->cache->set($cacheKey, $sessionToken, 60 * 15);
+        $this->cache->set($cacheKey, $sessionToken, $this->sessionTTL());
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace Flooris\FileMakerDataApi\RecordRepository;
 
+use stdClass;
+use Exception;
 use Flooris\FileMakerDataApi\Client;
 use Psr\Http\Message\StreamInterface;
 use GuzzleHttp\Exception\GuzzleException;
@@ -10,7 +12,7 @@ use Psr\SimpleCache\InvalidArgumentException;
 abstract class FmBaseRepository
 {
     public bool $findRequestFailed = false;
-    public ?\Exception $lastException = null;
+    public ?Exception $lastException = null;
     public int $totalRecordCount = 0;
     public int $foundCount = 0;
     public int $currentResultCount = 0;
@@ -35,7 +37,7 @@ abstract class FmBaseRepository
         ]);
     }
 
-    public function findRecordById(int $id): ?\stdClass
+    public function findRecordById(int $id): ?stdClass
     {
         try {
             $fmDataRecords = $this->findRecords($this->getFindQueryById($id));
@@ -58,7 +60,7 @@ abstract class FmBaseRepository
                 ->fmClient
                 ->record($this->fmLayoutName)
                 ->findRecords($findQuery, $offset, $limit, $sort);
-        } catch (\Exception|InvalidArgumentException $exception) {
+        } catch (Exception|InvalidArgumentException $exception) {
             $this->findRequestFailed = true;
             $this->lastException     = $exception;
 
