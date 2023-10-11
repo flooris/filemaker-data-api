@@ -1,6 +1,5 @@
 <?php
-
-use Flooris\FileMakerDataApi\Client;
+namespace Flooris\FileMakerDataApi;
 
 class InstanceManager
 {
@@ -28,7 +27,7 @@ class InstanceManager
     }
 
     // Public method to get the instance of the class
-    public static function getInstance(string $name)
+    public static function getInstance(string $name): ?Client
     {
         return self::init()->clientInstances[$name]?->init();
     }
