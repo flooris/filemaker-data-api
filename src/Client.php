@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Flooris\FileMakerDataApi;
-
 
 use Exception;
 use Illuminate\Support\Str;
@@ -28,15 +26,19 @@ class Client
         public string                      $configHost = "default",
         public ?Connector                  $connector = null,
         array                              $guzzleConfig = []
-    )
-    {
+    ) {
         if ($this->connector === null) {
             $this->connector = new Connector($configHost, $cache, $guzzleConfig);
         }
+    }
 
-        if ($this->connector->hasValidConnectionCredentials()) {
+    public function init(): self
+    {
+        if($this->connector->hasValidConnectionCredentials()) {
             $this->validateSession();
         }
+
+        return $this;
     }
 
     public function record($layout = null): Record
