@@ -1,12 +1,12 @@
 <?php
 
 return [
-    'default'  => [
+    'default' => [
         'hostname' => env('FM_HOSTNAME'),
-        'port'     => env('FM_PORT', null),
+        'port' => env('FM_PORT', null),
         'protocol' => env('FM_PROTOCOL', 'https://'),
 
-        'version'  => env('FM_VERSION', 'v1'), // v1 or vLatest
+        'version' => env('FM_VERSION', 'v1'), // v1 or vLatest
         'database' => env('FM_DATABASE', 'default'),
 
         'username' => env('FM_USERNAME'),
@@ -14,7 +14,7 @@ return [
     ],
     'settings' => [
         'boolean_true_values' => ['true', '1', 'yes', 'y', 'j', 'ja'],
-        'date_format'         => env('FM_DATE_FORMAT', 'm-d-Y'),
-        'session_ttl'         => env('FM_SESSION_TTL', 400),
+        'date_format' => env('FM_DATE_FORMAT', 'm-d-Y'),
+        'session_ttl' => env('FM_SESSION_TTL', 400),
     ],
 ];

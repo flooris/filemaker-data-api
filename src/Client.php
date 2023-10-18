@@ -1,20 +1,18 @@
 <?php
 
-
 namespace Flooris\FileMakerDataApi;
 
-
 use Exception;
-use Illuminate\Support\Str;
-use Psr\Http\Message\StreamInterface;
+use Flooris\FileMakerDataApi\Api\Authentication;
+use Flooris\FileMakerDataApi\Api\MetaData;
 use Flooris\FileMakerDataApi\Api\Record;
 use Flooris\FileMakerDataApi\Api\Script;
-use GuzzleHttp\Exception\GuzzleException;
-use Flooris\FileMakerDataApi\Api\MetaData;
-use Psr\SimpleCache\InvalidArgumentException;
-use Flooris\FileMakerDataApi\Api\Authentication;
 use Flooris\FileMakerDataApi\HttpClient\Connector;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
+use Illuminate\Support\Str;
+use Psr\Http\Message\StreamInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class Client
 {
@@ -84,7 +82,19 @@ class Client
 
     private function sessionTTL(): int
     {
-        return (int)config('filemaker.settings.session_ttl');
+        return (int) config('filemaker.settings.session_ttl');
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function getSessionToken(bool $validateSession = true): ?string
+    {
+        if ($validateSession) {
+            $this->validateSession();
+        }
+
+        return $this->getSessionTokenFromCache();
     }
 
     /**
@@ -123,7 +133,7 @@ class Client
     /**
      * @throws InvalidArgumentException
      */
-    public function setOrExtendSessionToken(?string $sessionToken = null): void
+    public function setOrExtendSessionToken(string $sessionToken = null): void
     {
         if (! $sessionToken) {
             $sessionToken = $this->getSessionTokenFromCache();

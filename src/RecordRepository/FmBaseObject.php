@@ -9,6 +9,7 @@ abstract class FmBaseObject
     use FmBaseObjectValueTrait;
 
     public int $recordId;
+
     public int $modId;
     public ?stdClass $portalData;
 
@@ -18,11 +19,10 @@ abstract class FmBaseObject
     public function __construct(
         stdClass                 $fmResultObject,
         public ?FmBaseRepository $repository = null,
-    )
-    {
-        $this->recordId   = (int)$fmResultObject->recordId;
-        $this->modId      = (int)$fmResultObject->modId;
-        $this->fieldData  = $fmResultObject->fieldData;
+    ) {
+        $this->recordId = (int) $fmResultObject->recordId;
+        $this->modId = (int) $fmResultObject->modId;
+        $this->fieldData = $fmResultObject->fieldData;
         $this->portalData = $fmResultObject->portalData;
     }
 

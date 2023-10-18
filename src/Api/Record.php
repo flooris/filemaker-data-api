@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Flooris\FileMakerDataApi\Api;
-
 
 use Exception;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -64,13 +62,14 @@ class Record extends ApiAbstract
      * Get records, default limit is 100 when called without offset or limit.
      *
      * @throws Exception|InvalidArgumentException
+     *
      * @see  https://fmhelp.filemaker.com/docs/18/en/dataapi/#work-with-records_get-records
      */
     public function records(int $startingRecord = 1, int $limit = 100, array $sort = null): object
     {
         $query = [
             '_offset' => $startingRecord,
-            '_limit'  => $limit,
+            '_limit' => $limit,
         ];
 
         if (is_array($sort) && ! empty($sort)) {
@@ -88,6 +87,7 @@ class Record extends ApiAbstract
      * Perform a search for a record / multiple records based on specified in the query
      *
      * @throws Exception|InvalidArgumentException
+     *
      * @see https://fmhelp.filemaker.com/docs/18/en/dataapi/#perform-a-find-request
      */
     public function findRecords(array $query, int $offset = 1, int $limit = 100, array $sort = null): object
@@ -97,8 +97,8 @@ class Record extends ApiAbstract
         }
 
         $parameters = [
-            'query'  => $query,
-            'limit'  => $limit,
+            'query' => $query,
+            'limit' => $limit,
             'offset' => $offset,
         ];
 

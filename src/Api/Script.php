@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Flooris\FileMakerDataApi\Api;
-
 
 use Exception;
 use Psr\SimpleCache\InvalidArgumentException;

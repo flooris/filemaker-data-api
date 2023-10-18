@@ -2,9 +2,9 @@
 
 namespace Flooris\FileMakerDataApi\Tests;
 
+use Flooris\FileMakerDataApi\FileMakerDataApiServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Flooris\FileMakerDataApi\FileMakerDataApiServiceProvider;
 
 class TestCase extends Orchestra
 {

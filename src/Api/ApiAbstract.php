@@ -1,14 +1,11 @@
 <?php
 
-
 namespace Flooris\FileMakerDataApi\Api;
 
-
 use Exception;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
-use Psr\SimpleCache\InvalidArgumentException;
 use Flooris\FileMakerDataApi\FileMakerDataApi;
+use GuzzleHttp\Exception\GuzzleException;
+use Psr\SimpleCache\InvalidArgumentException;
 
 abstract class ApiAbstract
 {
@@ -16,23 +13,18 @@ abstract class ApiAbstract
 
     /**
      * This will determine if the database will be included in the uri. Most requests will need this, but a few do not.
-     *
-     * @var bool
      */
     protected bool $includeDatabase = true;
 
     /**
      * This will determine if the layout will be included in the uri. Most requests will need this, but a few do not.
-     *
-     * @var bool
      */
     protected bool $includeLayout = true;
 
     public function __construct(
-        public FileMakerDataApi   $client,
+        public FileMakerDataApi $client,
         private ?string $layoutName = null
-    )
-    {
+    ) {
     }
 
     /**
@@ -176,7 +168,7 @@ abstract class ApiAbstract
      */
     private function handleException(GuzzleException $e): void
     {
-        $response     = $e->getResponse();
+        $response = $e->getResponse();
         $responseData = json_decode($response->getBody());
 
         if (! isset($responseData->messages)) {
@@ -185,7 +177,7 @@ abstract class ApiAbstract
 
         $firstErrorMessage = $responseData->messages[0];
 
-        if ((int)$firstErrorMessage->code === self::ERROR_INVALID_FILEMAKER_DATA_API_TOKEN) {
+        if ((int) $firstErrorMessage->code === self::ERROR_INVALID_FILEMAKER_DATA_API_TOKEN) {
             $this->client->deleteSessionToken();
             $this->client->validateSession();
 

@@ -2,20 +2,25 @@
 
 namespace Flooris\FileMakerDataApi\RecordRepository;
 
-use stdClass;
 use Exception;
-use Flooris\FileMakerDataApi\FileMakerDataApi;;
-use Psr\Http\Message\StreamInterface;
+use Flooris\FileMakerDataApi\FileMakerDataApi;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Http\Message\StreamInterface;
 use Psr\SimpleCache\InvalidArgumentException;
+use stdClass;
 
 abstract class FmBaseRepository
 {
     public bool $findRequestFailed = false;
+
     public ?Exception $lastException = null;
+
     public int $totalRecordCount = 0;
+
     public int $foundCount = 0;
+
     public int $currentResultCount = 0;
+
     public int $recordPointer = 0;
 
     private array $findQueryAll;
@@ -25,13 +30,11 @@ abstract class FmBaseRepository
      * ToDo: Add tests
      * ToDo: Add custom specific Exceptions for common cases
      */
-
     public function __construct(
         private readonly FileMakerDataApi $fmClient,
-        public string                     $fmLayoutName,
-        public string                     $fmIdFieldName
-    )
-    {
+        public string $fmLayoutName,
+        public string $fmIdFieldName
+    ) {
         $this->setFindQueryAll([
             $this->fmIdFieldName => '>0',
         ]);
@@ -62,7 +65,7 @@ abstract class FmBaseRepository
                 ->findRecords($findQuery, $offset, $limit, $sort);
         } catch (Exception|InvalidArgumentException $exception) {
             $this->findRequestFailed = true;
-            $this->lastException     = $exception;
+            $this->lastException = $exception;
 
             return null;
         }
@@ -74,8 +77,8 @@ abstract class FmBaseRepository
             return null;
         }
 
-        $this->totalRecordCount   = $result->dataInfo->totalRecordCount;
-        $this->foundCount         = $result->dataInfo->foundCount;
+        $this->totalRecordCount = $result->dataInfo->totalRecordCount;
+        $this->foundCount = $result->dataInfo->foundCount;
         $this->currentResultCount += $result->dataInfo->returnedCount;
 
         return $result->data;
@@ -85,7 +88,7 @@ abstract class FmBaseRepository
     {
         $isFirstPage = true;
 
-        $this->recordPointer      = 0;
+        $this->recordPointer = 0;
         $this->currentResultCount = 0;
 
         while ($isFirstPage || $this->hasMoreRecords()) {
@@ -143,7 +146,6 @@ abstract class FmBaseRepository
         return $this->fmClient->getDataContainerContent($dataContainerObjectUrl, $dataContainerToken);
     }
 
-
     private function getFindQueryAll(): array
     {
         return $this->findQueryAll;
@@ -151,6 +153,6 @@ abstract class FmBaseRepository
 
     private function hasMoreRecords(): bool
     {
-        return ($this->totalRecordCount > $this->currentResultCount);
+        return $this->totalRecordCount > $this->currentResultCount;
     }
 }

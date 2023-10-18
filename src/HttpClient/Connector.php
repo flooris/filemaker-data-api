@@ -2,28 +2,28 @@
 
 namespace Flooris\FileMakerDataApi\HttpClient;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\RequestOptions;
-use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\ResponseInterface;
-use GuzzleHttp\Exception\GuzzleException;
-use Psr\SimpleCache\InvalidArgumentException;
-use Flooris\FileMakerDataApi\FileMakerDataApi as FmClient;
-use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
 use Flooris\FileMakerDataApi\Exceptions\FilemakerDataApiConfigHostMissingException;
 use Flooris\FileMakerDataApi\Exceptions\FilemakerDataApiConfigInvalidConnectionException;
+use Flooris\FileMakerDataApi\FileMakerDataApi as FmClient;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\RequestOptions;
+use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 
 class Connector
 {
     private ?string $baseUrl;
+
     private ?Client $guzzleClient = null;
 
     public function __construct(
-        private string                     $configHost,
+        private string $configHost,
         protected CacheRepositoryInterface $cache,
-        private array                      $guzzleConfig = []
-    )
-    {
+        private array $guzzleConfig = []
+    ) {
         $this->baseUrl = $this->getBaseUri();
 
         if ($this->baseUrl === null) {
@@ -38,7 +38,7 @@ class Connector
     /**
      * @throws GuzzleException
      */
-    public function get(string $uri, ?string $sessionToken = null, array $query = []): ResponseInterface
+    public function get(string $uri, string $sessionToken = null, array $query = []): ResponseInterface
     {
         return $this->send('GET', $uri, $sessionToken, null, $query);
     }
@@ -46,7 +46,7 @@ class Connector
     /**
      * @throws GuzzleException
      */
-    public function post(string $uri, ?string $sessionToken = null, mixed $bodyData = null): ResponseInterface
+    public function post(string $uri, string $sessionToken = null, mixed $bodyData = null): ResponseInterface
     {
         return $this->send('POST', $uri, $sessionToken, $bodyData);
     }
@@ -54,7 +54,7 @@ class Connector
     /**
      * @throws GuzzleException
      */
-    public function patch(string $uri, ?string $sessionToken = null, mixed $bodyData = null): ResponseInterface
+    public function patch(string $uri, string $sessionToken = null, mixed $bodyData = null): ResponseInterface
     {
         return $this->send('PATCH', $uri, $sessionToken, $bodyData);
     }
@@ -62,7 +62,7 @@ class Connector
     /**
      * @throws GuzzleException
      */
-    public function delete(string $uri, ?string $sessionToken = null): ResponseInterface
+    public function delete(string $uri, string $sessionToken = null): ResponseInterface
     {
         return $this->send('DELETE', $uri, $sessionToken);
     }
@@ -108,20 +108,19 @@ class Connector
         return $response->getBody();
     }
 
-
     /**
      * @throws GuzzleException
      */
-    private function send(string $method, string $uri, ?string $sessionToken = null, mixed $bodyData = null, array $query = []): ResponseInterface
+    private function send(string $method, string $uri, string $sessionToken = null, mixed $bodyData = null, array $query = []): ResponseInterface
     {
         $options = [
             RequestOptions::HEADERS => [
-                'Content-Type'  => 'application/json',
-                'Accept'        => 'application/json',
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
                 'Authorization' => $this->getAuthorizationHeaderValue($sessionToken),
-                'User-Agent'    => FmClient::USER_AGENT,
+                'User-Agent' => FmClient::USER_AGENT,
             ],
-            RequestOptions::QUERY   => $query,
+            RequestOptions::QUERY => $query,
         ];
 
         if ($bodyData) {
@@ -133,9 +132,9 @@ class Connector
 
     private function getBaseUri(): ?string
     {
-        $port     = config(sprintf('filemaker.%s.port', $this->configHost));
+        $port = config(sprintf('filemaker.%s.port', $this->configHost));
         $protocol = config(sprintf('filemaker.%s.protocol', $this->configHost));
-        $host     = config(sprintf('filemaker.%s.hostname', $this->configHost));
+        $host = config(sprintf('filemaker.%s.hostname', $this->configHost));
 
         if (!$protocol ||
             !$host
@@ -151,7 +150,7 @@ class Connector
         );
     }
 
-    private function getAuthorizationHeaderValue(?string $sessionToken = null): string
+    private function getAuthorizationHeaderValue(string $sessionToken = null): string
     {
         try {
             if ($sessionToken) {
@@ -161,7 +160,7 @@ class Connector
             $username = config(sprintf('filemaker.%s.username', $this->configHost));
             $password = config(sprintf('filemaker.%s.password', $this->configHost));
 
-            return 'Basic ' . base64_encode("{$username}:{$password}");
+            return 'Basic '.base64_encode("{$username}:{$password}");
         } catch (InvalidArgumentException $e) {
             // ToDo: handle exception
         }

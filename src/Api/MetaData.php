@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Flooris\FileMakerDataApi\Api;
-
 
 use Psr\SimpleCache\InvalidArgumentException;
 
@@ -13,7 +11,7 @@ class MetaData extends ApiAbstract
      */
     public function getProductInfo(): object
     {
-        $this->includeLayout   = false;
+        $this->includeLayout = false;
         $this->includeDatabase = false;
 
         return $this->get('productInfo');
@@ -24,7 +22,7 @@ class MetaData extends ApiAbstract
      */
     public function getDatabaseNames(): object
     {
-        $this->includeLayout   = false;
+        $this->includeLayout = false;
         $this->includeDatabase = false;
 
         return $this->get('databases');
@@ -36,7 +34,7 @@ class MetaData extends ApiAbstract
     public function getScriptNames(): object
     {
         $this->includeDatabase = true;
-        $this->includeLayout   = false;
+        $this->includeLayout = false;
 
         return $this->get('scripts');
     }
@@ -47,7 +45,7 @@ class MetaData extends ApiAbstract
     public function getLayoutNames(): object
     {
         $this->includeDatabase = true;
-        $this->includeLayout   = false;
+        $this->includeLayout = false;
 
         return $this->get('layouts');
     }
@@ -58,7 +56,7 @@ class MetaData extends ApiAbstract
     public function getLayoutMetaData($layoutName): object
     {
         $this->includeDatabase = true;
-        $this->includeLayout   = false;
+        $this->includeLayout = false;
 
         return $this->get('layouts/%s', [$layoutName]);
     }
