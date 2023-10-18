@@ -1,110 +1,170 @@
-# This is my package filemaker-data-api
+# PHP client library for consuming the FileMaker Data API
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/flooris/filemaker-data-api.svg?style=flat-square)](https://packagist.org/packages/flooris/filemaker-data-api)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/flooris/filemaker-data-api/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/flooris/filemaker-data-api/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/flooris/filemaker-data-api/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/flooris/filemaker-data-api/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/flooris/filemaker-data-api.svg?style=flat-square)](https://packagist.org/packages/flooris/filemaker-data-api)
+PHP package (client library) for consuming the FileMaker Data API, with Laravel support. 
 
-## Flooris
----
-![Flooris visual](https://flooris.nl/img/containers/assets/header-image.webp/38313c04221b34c68cb027ed0d29a7ac.webp)
-<!-- ![Some image](assets/flooris-visual.jpg) -->
+## Install
 
-We are a young and driven team of technicians with a mission. We ensure that our clients' online challenges are solved with manageable and sustainable tools. We connect existing and reliable solutions to each other. This allows us to create customized solutions, often in combination with professional (open-source) packages and APIs. We ensure that all online solutions always perform at the highest level. In addition, we provide professional support without hassle through our service portal.
-
-
-## Installation
----
-
-You can install the package via composer:
+Via Composer:
 
 ```bash
 composer require flooris/filemaker-data-api
 ```
 
-You can publish and run the migrations with:
 
-```bash
-php artisan vendor:publish --tag="filemaker-data-api-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="filemaker-data-api-config"
-```
-
-This is the contents of the published config file:
+## Basic Usage
 
 ```php
-return [
+// Include Composer's autoloader.
+require_once __DIR__ . '/vendor/autoload.php';
+
+// Define the pagination variables
+$offset = 1;
+$limit = 100;
+
+// Define the FileMaker Lay-out
+$layoutName = 'Products';
+
+// Set up the FileMaker find query
+$findQuery = [
+    'some_field_name' => 'text to find',
 ];
+
+// Set up the client.
+$client = new \Flooris\FileMakerDataApi\Client();
+
+$result = $client
+    ->record($layoutName)
+    ->findRecords($findQuery, $offset, $limit)
+
+$totalRecordCount   = $result->dataInfo->totalRecordCount;
+$foundCount         = $result->dataInfo->foundCount;
+$currentResultCount = $result->dataInfo->returnedCount;
+
+foreach ($result->data as $fmResultObject) {
+    $recordId       = $fmResultObject->recordId;
+    $modificationId = $fmResultObject->modId;
+    
+    $title  = $fmResultObject->fieldData->title;
+    $active = (bool)$fmResultObject->fieldData->active;
+        
+    $options = $fmResultObject->portalData->options;
+}
 ```
 
-Optionally, you can publish the views using
+## Advanced usage
 
-```bash
-php artisan vendor:publish --tag="filemaker-data-api-views"
-```
-
-
-## Usage
----
+Define a Model Class for a FileMaker record, for example: `FmBrandObject`.
+The Model Class should extend `FmBaseObject`.
 
 ```php
-$FileMakerDataApi = new Flooris\FileMakerDataApi();
-echo $FileMakerDataApi->echoPhrase('Hello, FileMakerDataApi!');
+
+use Flooris\FileMakerDataApi\RecordRepository\FmBaseObject;
+
+class FmBrandObject extends FmBaseObject
+{
+    public const FM_LAYOUT_NAME = 'php_BRAND';
+    public const FM_ID_FIELD_NAME = '_id_brand';
+
+    public function getId(): int
+    {
+        return $this->getValue(self::FM_ID_FIELD_NAME);
+    }
+
+    public function getDataArray(): array
+    {
+        return [
+            'slug'        => $this->getValue('t_slug'),
+            'name'        => $this->getValue('t_name'),
+            'description' => $this->getValue('t_description'),
+            'position'    => (int)$this->getValue('n_sortOrder'),
+            'active'      => $this->getValueAsBoolean('t_active'),
+        ];
+    }
+
+    public function getSupplierId(): int
+    {
+        return (int)$this->getValue('id_supplier');
+    }
+}
+```
+
+Define a Repository Class, for example: `FmBrandRepository`.
+The Repository Class should extend `FmBaseRepository`.
+
+The Repository Class mainly defines the Model Class, which also contains the FileMaker Layout name and ID field name.
+
+```php
+use Flooris\FileMakerDataApi\Client;
+use Flooris\FileMakerDataApi\RecordRepository\FmBaseRepository;
+
+class FmBrandRepository extends FmBaseRepository
+{
+    public function __construct(
+        private readonly Client $fmClient
+    )
+    {
+        parent::__construct(
+            $this->fmClient,
+            FmBrandObject::FM_LAYOUT_NAME,
+            FmBrandObject::FM_ID_FIELD_NAME
+        );
+    }
+
+    public function find(int $id): ?FmBrandObject
+    {
+        if ($fmDataRecord = $this->findRecordById($id)) {
+            return new FmBrandObject($fmDataRecord);
+        }
+
+        return null;
+    }
+
+    public function each(callable $callback): void
+    {
+        parent::each(function (\stdClass $fmDataRecord) use ($callback) {
+            $callback(new FmBrandObject($fmDataRecord));
+        });
+    }
+}
+```
+
+With the Repository it is easy to access records from the FileMaker database table.
+For example:
+
+```php
+
+// Set up the client.
+$client = new \Flooris\FileMakerDataApi\Client();
+
+// Initialize the Brand Repository
+$brandRepository = new FmBrandRepository($client);
+
+$brandRepository->each(function(FmBrandObject $fmBrandObject) {
+    $id         = $fmBrandObject->getId();
+    $supplierId = $fmBrandObject->getSupplierId();
+    
+    // For example update or create an Eloquent Model like this:
+    Brand::query()->updateOrCreate(
+        ['id' => $id], 
+        $fmBrandObject->getDataArray()
+    );
+    
+    // Or for example update or create an Eloquent Model using a BelongsTo relationship like this:
+    Supplier::query()
+        ->findOrFail($supplierId)
+        ->brands()
+        ->updateOrCreate(
+            ['id' => $id], 
+            $fmBrandObject->getDataArray()
+        );
+})
+
 ```
 
 
-## Testing
----
+## Package improvements
 
-Run following command to run pest test cases
-```bash
-composer test
-```
-
-
-## Changelog
----
-
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-
-## Contributing
----
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-
-## Security Vulnerabilities
----
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
-
-## Credits
----
-
-- [Tim](https://github.com/flooris)
-- [All Contributors](../../contributors)
-
-
-## License
----
-
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-
-
-<!--delete-->
-## template information
----
-
-This repo can be used to scaffold a Laravel package. Follow these steps to get started:
-
-1. Press the "Use this template" button at the top of this repo to create a new repo with the contents of this filemaker-data-api.
-2. Run "php ./configure.php" to run a script that will replace all placeholders throughout all the files.
-3. Have fun creating your package.
+ToDo's:
+* Tests
+* Custom exceptions
+* Fix missing config helper without Laravel, for example in FmBaseObject
