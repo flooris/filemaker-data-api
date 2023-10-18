@@ -4,7 +4,7 @@ namespace Flooris\FileMakerDataApi\RecordRepository;
 
 use stdClass;
 use Exception;
-use Flooris\FileMakerDataApi\Client;
+use Flooris\FileMakerDataApi\FileMakerDataApi;;
 use Psr\Http\Message\StreamInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\SimpleCache\InvalidArgumentException;
@@ -27,9 +27,9 @@ abstract class FmBaseRepository
      */
 
     public function __construct(
-        private Client $fmClient,
-        public string  $fmLayoutName,
-        public string  $fmIdFieldName
+        private readonly FileMakerDataApi $fmClient,
+        public string                     $fmLayoutName,
+        public string                     $fmIdFieldName
     )
     {
         $this->setFindQueryAll([

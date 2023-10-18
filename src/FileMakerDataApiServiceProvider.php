@@ -2,21 +2,23 @@
 
 namespace Flooris\FileMakerDataApi;
 
-use Illuminate\Support\ServiceProvider;
+use Flooris\FileMakerDataApi\Commands\FileMakerDataApiCommand;
+use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class FileMakerDataApiServiceProvider extends ServiceProvider
+
+class FileMakerDataApiServiceProvider extends PackageServiceProvider
 {
-    public function boot(): void
+    public function
+    configurePackage(Package $package): void
     {
-        $this->publishes([
-            __DIR__ . '/../config/filemaker.php' => config_path('filemaker.php'),
-        ], 'filemaker-data-api');
-    }
-
-    public function register(): void
-    {
-        $this->mergeConfigFrom(
-            __DIR__ . '/../config/filemaker.php', 'filemaker'
-        );
+        /*
+         * This class is a Package ServiceProvider
+         *
+         * More info: https://github.com/spatie/laravel-package-tools
+         */
+        $package->name('filemaker-data-api')
+            ->hasConfigFile('filemaker')
+            ->hasCommand(FileMakerDataApiCommand::class);
     }
 }

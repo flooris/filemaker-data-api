@@ -5,9 +5,10 @@ namespace Flooris\FileMakerDataApi\Api;
 
 
 use Exception;
-use Flooris\FileMakerDataApi\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use Psr\SimpleCache\InvalidArgumentException;
+use Flooris\FileMakerDataApi\FileMakerDataApi;
 
 abstract class ApiAbstract
 {
@@ -28,7 +29,7 @@ abstract class ApiAbstract
     protected bool $includeLayout = true;
 
     public function __construct(
-        public Client   $client,
+        public FileMakerDataApi   $client,
         private ?string $layoutName = null
     )
     {

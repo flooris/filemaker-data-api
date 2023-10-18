@@ -8,7 +8,7 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\SimpleCache\InvalidArgumentException;
-use Flooris\FileMakerDataApi\Client as FmClient;
+use Flooris\FileMakerDataApi\FileMakerDataApi as FmClient;
 use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
 use Flooris\FileMakerDataApi\Exceptions\FilemakerDataApiConfigHostMissingException;
 use Flooris\FileMakerDataApi\Exceptions\FilemakerDataApiConfigInvalidConnectionException;
@@ -35,21 +35,33 @@ class Connector
         ], $guzzleConfig));
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function get(string $uri, ?string $sessionToken = null, array $query = []): ResponseInterface
     {
         return $this->send('GET', $uri, $sessionToken, null, $query);
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function post(string $uri, ?string $sessionToken = null, mixed $bodyData = null): ResponseInterface
     {
         return $this->send('POST', $uri, $sessionToken, $bodyData);
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function patch(string $uri, ?string $sessionToken = null, mixed $bodyData = null): ResponseInterface
     {
         return $this->send('PATCH', $uri, $sessionToken, $bodyData);
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function delete(string $uri, ?string $sessionToken = null): ResponseInterface
     {
         return $this->send('DELETE', $uri, $sessionToken);
@@ -97,6 +109,9 @@ class Connector
     }
 
 
+    /**
+     * @throws GuzzleException
+     */
     private function send(string $method, string $uri, ?string $sessionToken = null, mixed $bodyData = null, array $query = []): ResponseInterface
     {
         $options = [
