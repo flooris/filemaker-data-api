@@ -20,6 +20,8 @@ class Client
 {
     public const USER_AGENT = 'flooris-filemaker-data-api';
 
+    public bool $hasValidConnectionCredentials;
+
     /**
      * @throws InvalidArgumentException
      */
@@ -27,14 +29,17 @@ class Client
         protected CacheRepositoryInterface $cache,
         public string                      $configHost = "default",
         public ?Connector                  $connector = null,
-        array                              $guzzleConfig = []
+        array                              $guzzleConfig = [],
+        bool                               $validateConnection = false,
     )
     {
         if ($this->connector === null) {
             $this->connector = new Connector($configHost, $cache, $guzzleConfig);
         }
 
-        if ($this->connector->hasValidConnectionCredentials()) {
+        $this->hasValidConnectionCredentials = $this->connector->hasValidConnectionCredentials();
+
+        if ($this->hasValidConnectionCredentials && $validateConnection) {
             $this->validateSession();
         }
     }
