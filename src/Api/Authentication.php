@@ -15,7 +15,7 @@ class Authentication extends ApiAbstract
      */
     public function login(): string
     {
-        $response     = $this->post('sessions');
+        $response     = $this->post('sessions', [], [], false);
         $sessionToken = $response->token;
 
         $this->client->setOrExtendSessionToken($sessionToken);
