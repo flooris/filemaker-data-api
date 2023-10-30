@@ -38,15 +38,15 @@ abstract class ApiAbstract
      * @throws Exception // ToDo: Refactor to specific custom exception
      * @throws InvalidArgumentException
      */
-    protected function get(string $uri, array $uriValues = [], array $query = []): object
+    protected function get(string $uri, array $uriValues = [], array $query = [], bool $validateSession = true): object
     {
         $sessionToken = null;
 
         try {
             $preparedUri  = $this->prepareUri($uri, $uriValues);
-            $sessionToken = $this->client->getSessionToken();
+            $sessionToken = $this->client->getSessionToken($validateSession);
 
-            $response = $this->client->connector->get($preparedUri, $sessionToken, $query);
+            $response = $this->client->connector->get($preparedUri, $sessionToken, $query, false);
         } catch (GuzzleException $e) {
             $this->handleException($e);
 
@@ -62,19 +62,19 @@ abstract class ApiAbstract
      * @throws Exception
      * @throws InvalidArgumentException
      */
-    protected function post(string $uri, array $uriValues = [], array $parameters = []): object
+    protected function post(string $uri, array $uriValues = [], array $parameters = [], bool $validateSession = true): object
     {
         $sessionToken = null;
 
         try {
             $preparedUri  = $this->prepareUri($uri, $uriValues);
-            $sessionToken = $this->client->getSessionToken();
+            $sessionToken = $this->client->getSessionToken($validateSession);
 
             $response = $this->client->connector->post($preparedUri, $sessionToken, $parameters);
         } catch (GuzzleException $e) {
             $this->handleException($e);
 
-            return $this->post($uri, $uriValues, $parameters);
+            return $this->post($uri, $uriValues, $parameters, false);
         }
 
         $this->client->setOrExtendSessionToken($sessionToken);
@@ -86,19 +86,19 @@ abstract class ApiAbstract
      * @throws Exception
      * @throws InvalidArgumentException
      */
-    protected function patch(string $uri, array $uriValues = [], array $parameters = []): object
+    protected function patch(string $uri, array $uriValues = [], array $parameters = [], bool $validateSession = true): object
     {
         $sessionToken = null;
 
         try {
             $preparedUri  = $this->prepareUri($uri, $uriValues);
-            $sessionToken = $this->client->getSessionToken();
+            $sessionToken = $this->client->getSessionToken($validateSession);
 
             $response = $this->client->connector->patch($preparedUri, $sessionToken, $parameters);
         } catch (GuzzleException $e) {
             $this->handleException($e);
 
-            return $this->patch($uri, $uriValues, $parameters)->response;
+            return $this->patch($uri, $uriValues, $parameters, false)->response;
         }
 
         $this->client->setOrExtendSessionToken($sessionToken);
@@ -110,19 +110,19 @@ abstract class ApiAbstract
      * @throws Exception
      * @throws InvalidArgumentException
      */
-    protected function delete(string $uri, array $uriValues = []): object
+    protected function delete(string $uri, array $uriValues = [], bool $validateSession = true): object
     {
         $sessionToken = null;
 
         try {
             $preparedUri  = $this->prepareUri($uri, $uriValues);
-            $sessionToken = $this->client->getSessionToken();
+            $sessionToken = $this->client->getSessionToken($validateSession);
 
             $response = $this->client->connector->delete($preparedUri, $sessionToken);
         } catch (GuzzleException $e) {
             $this->handleException($e);
 
-            return $this->delete($uri, $uriValues);
+            return $this->delete($uri, $uriValues, false);
         }
 
         $this->client->setOrExtendSessionToken($sessionToken);

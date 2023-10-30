@@ -90,9 +90,11 @@ class Client
     /**
      * @throws InvalidArgumentException
      */
-    public function getSessionToken(): ?string
+    public function getSessionToken(bool $validateSession = true): ?string
     {
-        $this->validateSession();
+        if ($validateSession) {
+            $this->validateSession();
+        }
 
         return $this->getSessionTokenFromCache();
     }
