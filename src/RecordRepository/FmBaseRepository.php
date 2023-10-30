@@ -81,11 +81,9 @@ abstract class FmBaseRepository
         return $result->data;
     }
 
-    public function each(callable $callback): void
+    public function each(callable $callback, int $offset = 1, int $limit = 100, array $sort = []): void
     {
         $isFirstPage = true;
-        $offset      = 1;
-        $limit       = 100;
 
         $this->recordPointer      = 0;
         $this->currentResultCount = 0;
@@ -97,7 +95,7 @@ abstract class FmBaseRepository
                 $offset += $limit;
             }
 
-            $fmDataRecords = $this->findRecords($this->getFindQueryAll(), $offset, $limit);
+            $fmDataRecords = $this->findRecords($this->getFindQueryAll(), $offset, $limit, $sort);
 
             if (! $fmDataRecords) {
                 return;
