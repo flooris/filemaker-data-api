@@ -40,9 +40,11 @@ abstract class ApiAbstract
      */
     protected function get(string $uri, array $uriValues = [], array $query = []): object
     {
+        $sessionToken = null;
+
         try {
             $preparedUri  = $this->prepareUri($uri, $uriValues);
-            $sessionToken = $this->client->getSessionTokenFromCache();
+            $sessionToken = $this->client->getSessionToken();
 
             $response = $this->client->connector->get($preparedUri, $sessionToken, $query);
         } catch (GuzzleException $e) {
@@ -51,7 +53,7 @@ abstract class ApiAbstract
             return $this->get($uri, $uriValues);
         }
 
-        $this->client->setOrExtendSessionToken();
+        $this->client->setOrExtendSessionToken($sessionToken);
 
         return json_decode($response->getBody(), false)->response;
     }
@@ -62,9 +64,11 @@ abstract class ApiAbstract
      */
     protected function post(string $uri, array $uriValues = [], array $parameters = []): object
     {
+        $sessionToken = null;
+
         try {
             $preparedUri  = $this->prepareUri($uri, $uriValues);
-            $sessionToken = $this->client->getSessionTokenFromCache();
+            $sessionToken = $this->client->getSessionToken();
 
             $response = $this->client->connector->post($preparedUri, $sessionToken, $parameters);
         } catch (GuzzleException $e) {
@@ -73,7 +77,7 @@ abstract class ApiAbstract
             return $this->post($uri, $uriValues, $parameters);
         }
 
-        $this->client->setOrExtendSessionToken();
+        $this->client->setOrExtendSessionToken($sessionToken);
 
         return json_decode($response->getBody(), false)->response;
     }
@@ -84,9 +88,11 @@ abstract class ApiAbstract
      */
     protected function patch(string $uri, array $uriValues = [], array $parameters = []): object
     {
+        $sessionToken = null;
+
         try {
             $preparedUri  = $this->prepareUri($uri, $uriValues);
-            $sessionToken = $this->client->getSessionTokenFromCache();
+            $sessionToken = $this->client->getSessionToken();
 
             $response = $this->client->connector->patch($preparedUri, $sessionToken, $parameters);
         } catch (GuzzleException $e) {
@@ -95,7 +101,7 @@ abstract class ApiAbstract
             return $this->patch($uri, $uriValues, $parameters)->response;
         }
 
-        $this->client->setOrExtendSessionToken();
+        $this->client->setOrExtendSessionToken($sessionToken);
 
         return json_decode($response->getBody(), false)->response;
     }
@@ -106,9 +112,11 @@ abstract class ApiAbstract
      */
     protected function delete(string $uri, array $uriValues = []): object
     {
+        $sessionToken = null;
+
         try {
             $preparedUri  = $this->prepareUri($uri, $uriValues);
-            $sessionToken = $this->client->getSessionTokenFromCache();
+            $sessionToken = $this->client->getSessionToken();
 
             $response = $this->client->connector->delete($preparedUri, $sessionToken);
         } catch (GuzzleException $e) {
@@ -117,7 +125,7 @@ abstract class ApiAbstract
             return $this->delete($uri, $uriValues);
         }
 
-        $this->client->setOrExtendSessionToken();
+        $this->client->setOrExtendSessionToken($sessionToken);
 
         return json_decode($response->getBody(), false)->response;
     }

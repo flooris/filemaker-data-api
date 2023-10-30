@@ -90,6 +90,16 @@ class Client
     /**
      * @throws InvalidArgumentException
      */
+    public function getSessionToken(): ?string
+    {
+        $this->validateSession();
+
+        return $this->getSessionTokenFromCache();
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
     public function getSessionTokenFromCache(): ?string
     {
         return $this->cache->get($this->getSessionTokenCacheKey());
