@@ -56,25 +56,23 @@ class Connector
         return $this->send('DELETE', $uri, $sessionToken);
     }
 
+    /**
+        * @throws GuzzleException
+     */
     public function getDataContainerToken(string $dataContainerObjectUrl): ?string
     {
         $options = array_merge([
             RequestOptions::ALLOW_REDIRECTS => false,
         ], $this->guzzleConfig);
 
-        try {
-            $response     = $this->guzzleClient->request('GET', $dataContainerObjectUrl, $options);
-            $cookieHeader = $response->getHeader('Set-Cookie');
+        $response     = $this->guzzleClient->request('GET', $dataContainerObjectUrl, $options);
+        $cookieHeader = $response->getHeader('Set-Cookie');
 
-            if ($sessionToken = reset($cookieHeader)) {
-                return $sessionToken;
-            }
-
-            return null;
-
-        } catch (GuzzleException $e) {
-            return null;
+        if ($sessionToken = reset($cookieHeader)) {
+            return $sessionToken;
         }
+
+        return null;
     }
 
     /**
