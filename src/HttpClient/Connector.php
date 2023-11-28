@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Flooris\FileMakerDataApi\HttpClient;
 
 use GuzzleHttp\Client;
@@ -78,16 +77,19 @@ class Connector
     /**
      * @throws GuzzleException
      */
-    public function getDataContainerContent(string $dataContainerObjectUrl, string $dataContainerToken): ?StreamInterface
+    public function getDataContainerContent(string $dataContainerObjectUrl, ?string $dataContainerToken): ?StreamInterface
     {
+        $extraOptions = [];
 
-        $options = array_merge([
-            RequestOptions::HEADERS => [
+        if($dataContainerToken) {
+            $extraOptions[RequestOptions::HEADERS] =  [
                 'Cookie' => [
                     $dataContainerToken,
                 ],
-            ],
-        ], $this->guzzleConfig);
+            ];
+        }
+
+        $options = array_merge($extraOptions, $this->guzzleConfig);
 
         $response = $this->guzzleClient->request('GET', $dataContainerObjectUrl, $options);
 
@@ -120,13 +122,14 @@ class Connector
         $protocol = config(sprintf('filemaker.%s.protocol', $this->configHost));
         $host     = config(sprintf('filemaker.%s.hostname', $this->configHost));
 
-        if (! $protocol ||
-            ! $host
+        if (!$protocol ||
+            !$host
         ) {
             return null;
         }
 
-        return sprintf('%s%s%s/',
+        return sprintf(
+            '%s%s%s/',
             $protocol,
             $host,
             $port ? ":{$port}" : '',
@@ -169,7 +172,7 @@ class Connector
     {
         $config = config(sprintf('filemaker.%s', $this->configHost));
 
-        if (! $config) {
+        if (!$config) {
             throw new FilemakerDataApiConfigHostMissingException($this->configHost);
         }
 
@@ -182,7 +185,7 @@ class Connector
                 continue;
             }
 
-            if (! $configValue && $throwException) {
+            if (!$configValue && $throwException) {
                 throw new FilemakerDataApiConfigInvalidConnectionException("The key {$configKey} has no value");
             }
         }
