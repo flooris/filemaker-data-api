@@ -22,7 +22,7 @@ class Connector
         private string                     $configHost,
         protected CacheRepositoryInterface $cache,
         private array                      $guzzleConfig = []
-    ) 
+    )
     {
         $this->baseUrl = $this->getBaseUri();
 
