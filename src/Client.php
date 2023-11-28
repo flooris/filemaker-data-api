@@ -141,7 +141,7 @@ class Client
     /**
      * @throws GuzzleException
      */
-    public function getDataContainerContent(string $dataContainerObjectUrl, string $dataContainerToken): ?StreamInterface
+    public function getDataContainerContent(string $dataContainerObjectUrl, ?string $dataContainerToken = null): ?StreamInterface
     {
         return $this->connector->getDataContainerContent($dataContainerObjectUrl, $dataContainerToken);
     }
