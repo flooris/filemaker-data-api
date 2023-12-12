@@ -65,7 +65,7 @@ class Record extends ApiAbstract
      *
      * @see  https://fmhelp.filemaker.com/docs/18/en/dataapi/#work-with-records_get-records
      */
-    public function records(int $startingRecord = 1, int $limit = 100, array $sort = null): object
+    public function records(int $startingRecord = 1, int $limit = 100, ?array $sort = null): object
     {
         $query = [
             '_offset' => $startingRecord,
@@ -90,7 +90,7 @@ class Record extends ApiAbstract
      *
      * @see https://fmhelp.filemaker.com/docs/18/en/dataapi/#perform-a-find-request
      */
-    public function findRecords(array $query, int $offset = 1, int $limit = 100, array $sort = null): object
+    public function findRecords(array $query, int $offset = 1, int $limit = 100, ?array $sort = null): object
     {
         if (! isset($query[0]) || gettype($query[0]) !== 'array') {
             $query = [$query]; // This is required as FileMaker expects an array

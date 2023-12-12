@@ -38,7 +38,7 @@ class Connector
     /**
      * @throws GuzzleException
      */
-    public function get(string $uri, string $sessionToken = null, array $query = []): ResponseInterface
+    public function get(string $uri, ?string $sessionToken = null, array $query = []): ResponseInterface
     {
         return $this->send('GET', $uri, $sessionToken, null, $query);
     }
@@ -46,7 +46,7 @@ class Connector
     /**
      * @throws GuzzleException
      */
-    public function post(string $uri, string $sessionToken = null, mixed $bodyData = null): ResponseInterface
+    public function post(string $uri, ?string $sessionToken = null, mixed $bodyData = null): ResponseInterface
     {
         return $this->send('POST', $uri, $sessionToken, $bodyData);
     }
@@ -54,7 +54,7 @@ class Connector
     /**
      * @throws GuzzleException
      */
-    public function patch(string $uri, string $sessionToken = null, mixed $bodyData = null): ResponseInterface
+    public function patch(string $uri, ?string $sessionToken = null, mixed $bodyData = null): ResponseInterface
     {
         return $this->send('PATCH', $uri, $sessionToken, $bodyData);
     }
@@ -62,7 +62,7 @@ class Connector
     /**
      * @throws GuzzleException
      */
-    public function delete(string $uri, string $sessionToken = null): ResponseInterface
+    public function delete(string $uri, ?string $sessionToken = null): ResponseInterface
     {
         return $this->send('DELETE', $uri, $sessionToken);
     }
@@ -111,7 +111,7 @@ class Connector
     /**
      * @throws GuzzleException
      */
-    private function send(string $method, string $uri, string $sessionToken = null, mixed $bodyData = null, array $query = []): ResponseInterface
+    private function send(string $method, string $uri, ?string $sessionToken = null, mixed $bodyData = null, array $query = []): ResponseInterface
     {
         $options = [
             RequestOptions::HEADERS => [
@@ -150,7 +150,7 @@ class Connector
         );
     }
 
-    private function getAuthorizationHeaderValue(string $sessionToken = null): string
+    private function getAuthorizationHeaderValue(?string $sessionToken = null): string
     {
         try {
             if ($sessionToken) {

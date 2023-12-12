@@ -133,7 +133,7 @@ class Client
     /**
      * @throws InvalidArgumentException
      */
-    public function setOrExtendSessionToken(string $sessionToken = null): void
+    public function setOrExtendSessionToken(?string $sessionToken = null): void
     {
         if (! $sessionToken) {
             $sessionToken = $this->getSessionTokenFromCache();
