@@ -3,6 +3,7 @@
 namespace Flooris\FileMakerDataApi\Exceptions;
 
 use Exception;
+use Throwable;
 
 class FilemakerDataApiConfigInvalidConnectionException extends Exception
 {

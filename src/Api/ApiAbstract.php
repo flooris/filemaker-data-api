@@ -41,7 +41,7 @@ abstract class ApiAbstract
             $preparedUri  = $this->prepareUri($uri, $uriValues);
             $sessionToken = $this->client->getSessionToken($validateSession);
 
-            $response = $this->client->connector->get($preparedUri, $sessionToken, $query, false);
+            $response = $this->client->connector->get($preparedUri, $sessionToken, $query);
         } catch (GuzzleException $e) {
             $this->handleException($e);
 

@@ -2,12 +2,12 @@
 
 namespace Flooris\FileMakerDataApi\RecordRepository;
 
-use Exception;
-use Flooris\FileMakerDataApi\FileMakerDataApi;
-use GuzzleHttp\Exception\GuzzleException;
-use Psr\Http\Message\StreamInterface;
-use Psr\SimpleCache\InvalidArgumentException;
 use stdClass;
+use Exception;
+use Psr\Http\Message\StreamInterface;
+use GuzzleHttp\Exception\GuzzleException;
+use Psr\SimpleCache\InvalidArgumentException;
+use Flooris\FileMakerDataApi\FileMakerDataApi;
 
 abstract class FmBaseRepository
 {
@@ -65,12 +65,12 @@ abstract class FmBaseRepository
                 ->findRecords($findQuery, $offset, $limit, $sort);
         } catch (Exception|InvalidArgumentException $exception) {
             $this->findRequestFailed = true;
-            $this->lastException = $exception;
+            $this->lastException     = $exception;
 
             return null;
         }
 
-        if (! $result ||
+        if (
             ! isset($result->data) ||
             ! isset($result->dataInfo)
         ) {
@@ -78,7 +78,7 @@ abstract class FmBaseRepository
         }
 
         $this->totalRecordCount = $result->dataInfo->totalRecordCount;
-        $this->foundCount = $result->dataInfo->foundCount;
+        $this->foundCount       = $result->dataInfo->foundCount;
         $this->currentResultCount += $result->dataInfo->returnedCount;
 
         return $result->data;
@@ -88,7 +88,7 @@ abstract class FmBaseRepository
     {
         $isFirstPage = true;
 
-        $this->recordPointer = 0;
+        $this->recordPointer      = 0;
         $this->currentResultCount = 0;
 
         while ($isFirstPage || $this->hasMoreRecords()) {

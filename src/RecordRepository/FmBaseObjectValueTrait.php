@@ -40,10 +40,6 @@ trait FmBaseObjectValueTrait
     {
         $value = strtolower($this->getValue($fieldName));
 
-        if (is_float($value)) {
-            return $value;
-        }
-
         if (stristr($value, ',') && stristr($value, '.') === false) {
             return (float)str_replace(',', '.', $value);
         }
