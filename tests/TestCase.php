@@ -2,9 +2,9 @@
 
 namespace Flooris\FileMakerDataApi\Tests;
 
-use Flooris\FileMakerDataApi\FileMakerDataApiServiceProvider;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Flooris\FileMakerDataApi\FileMakerDataApiServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -13,7 +13,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'FileMakerDataApi\\FileMakerDataApi\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'FileMakerDataApi\\FileMakerDataApi\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
     }
 
