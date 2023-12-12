@@ -24,7 +24,7 @@ abstract class ApiAbstract
     protected bool $includeLayout = true;
 
     public function __construct(
-        public Client $client,
+        public FileMakerDataApi $client,
         private ?string $layoutName = null
     ) {
     }

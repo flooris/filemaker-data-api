@@ -63,6 +63,18 @@ class FileMakerDataApi
 
     /**
      * @throws InvalidArgumentException
+     */
+    public function getSessionToken(bool $validateSession = true): ?string
+    {
+        if ($validateSession) {
+            $this->validateSession();
+        }
+
+        return $this->getSessionTokenFromCache();
+    }
+
+    /**
+     * @throws InvalidArgumentException
      * @throws Exception
      */
     public function validateSession(): void
