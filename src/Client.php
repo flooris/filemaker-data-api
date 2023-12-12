@@ -3,16 +3,16 @@
 namespace Flooris\FileMakerDataApi;
 
 use Exception;
-use Flooris\FileMakerDataApi\Api\Authentication;
-use Flooris\FileMakerDataApi\Api\MetaData;
-use Flooris\FileMakerDataApi\Api\Record;
-use Flooris\FileMakerDataApi\Api\Script;
-use Flooris\FileMakerDataApi\HttpClient\Connector;
-use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
 use Illuminate\Support\Str;
 use Psr\Http\Message\StreamInterface;
+use Flooris\FileMakerDataApi\Api\Record;
+use Flooris\FileMakerDataApi\Api\Script;
+use GuzzleHttp\Exception\GuzzleException;
+use Flooris\FileMakerDataApi\Api\MetaData;
 use Psr\SimpleCache\InvalidArgumentException;
+use Flooris\FileMakerDataApi\Api\Authentication;
+use Flooris\FileMakerDataApi\HttpClient\Connector;
+use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
 
 class Client
 {
@@ -25,12 +25,11 @@ class Client
      */
     public function __construct(
         protected CacheRepositoryInterface $cache,
-        public string                      $configHost = "default",
-        public ?Connector                  $connector = null,
-        array                              $guzzleConfig = [],
-        bool                               $validateConnection = false,
-    )
-    {
+        public string $configHost = 'default',
+        public ?Connector $connector = null,
+        array $guzzleConfig = [],
+        bool $validateConnection = false,
+    ) {
         if ($this->connector === null) {
             $this->connector = new Connector($configHost, $cache, $guzzleConfig);
         }
@@ -100,18 +99,6 @@ class Client
     /**
      * @throws InvalidArgumentException
      */
-    public function getSessionToken(bool $validateSession = true): ?string
-    {
-        if ($validateSession) {
-            $this->validateSession();
-        }
-
-        return $this->getSessionTokenFromCache();
-    }
-
-    /**
-     * @throws InvalidArgumentException
-     */
     public function getSessionTokenFromCache(): ?string
     {
         return $this->cache->get($this->getSessionTokenCacheKey());
@@ -133,7 +120,7 @@ class Client
     /**
      * @throws InvalidArgumentException
      */
-    public function setOrExtendSessionToken(?string $sessionToken = null): void
+    public function setOrExtendSessionToken(string $sessionToken = null): void
     {
         if (! $sessionToken) {
             $sessionToken = $this->getSessionTokenFromCache();

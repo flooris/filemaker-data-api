@@ -3,9 +3,11 @@
 namespace Flooris\FileMakerDataApi\Api;
 
 use Exception;
-use Flooris\FileMakerDataApi\FileMakerDataApi;
+use Flooris\FileMakerDataApi\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use Psr\SimpleCache\InvalidArgumentException;
+use Flooris\FileMakerDataApi\FileMakerDataApi;
 
 abstract class ApiAbstract
 {
@@ -22,13 +24,13 @@ abstract class ApiAbstract
     protected bool $includeLayout = true;
 
     public function __construct(
-        public FileMakerDataApi $client,
+        public Client $client,
         private ?string $layoutName = null
     ) {
     }
 
     /**
-     * @throws Exception // ToDo: Refactor to specific custom exception
+     * @throws Exception                // ToDo: Refactor to specific custom exception
      * @throws InvalidArgumentException
      */
     protected function get(string $uri, array $uriValues = [], array $query = [], bool $validateSession = true): object
@@ -168,8 +170,13 @@ abstract class ApiAbstract
      */
     private function handleException(GuzzleException $e): void
     {
-        $response = $e->getResponse();
-        $responseData = json_decode($response->getBody());
+        $response     = null;
+        $responseData = null;
+
+        if ($e instanceof RequestException) {
+            $response     = $e->getResponse();
+            $responseData = json_decode($response->getBody());
+        }
 
         if (! isset($responseData->messages)) {
             throw new Exception('Empty response from FileMaker', 0, $e);
