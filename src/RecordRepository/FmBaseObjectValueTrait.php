@@ -12,8 +12,8 @@ trait FmBaseObjectValueTrait
     {
         if ($nullable) {
             return match ($this->fieldData->{$fieldName}) {
-                "", null => null,
-                0 => 0,
+                '', null => null,
+                0       => 0,
                 default => $this->fieldData->{$fieldName}
             };
         }
@@ -41,9 +41,9 @@ trait FmBaseObjectValueTrait
         $value = strtolower($this->getValue($fieldName));
 
         if (stristr($value, ',') && stristr($value, '.') === false) {
-            return (float)str_replace(',', '.', $value);
+            return (float) str_replace(',', '.', $value);
         }
 
-        return (float)$value;
+        return (float) $value;
     }
 }

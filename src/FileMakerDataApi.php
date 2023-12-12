@@ -3,16 +3,16 @@
 namespace Flooris\FileMakerDataApi;
 
 use Exception;
-use Flooris\FileMakerDataApi\Api\Authentication;
-use Flooris\FileMakerDataApi\Api\MetaData;
-use Flooris\FileMakerDataApi\Api\Record;
-use Flooris\FileMakerDataApi\Api\Script;
-use Flooris\FileMakerDataApi\HttpClient\Connector;
-use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
 use Illuminate\Support\Str;
 use Psr\Http\Message\StreamInterface;
+use Flooris\FileMakerDataApi\Api\Record;
+use Flooris\FileMakerDataApi\Api\Script;
+use GuzzleHttp\Exception\GuzzleException;
+use Flooris\FileMakerDataApi\Api\MetaData;
 use Psr\SimpleCache\InvalidArgumentException;
+use Flooris\FileMakerDataApi\Api\Authentication;
+use Flooris\FileMakerDataApi\HttpClient\Connector;
+use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
 
 class FileMakerDataApi
 {

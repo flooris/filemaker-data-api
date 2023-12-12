@@ -69,7 +69,7 @@ class Record extends ApiAbstract
     {
         $query = [
             '_offset' => $startingRecord,
-            '_limit' => $limit,
+            '_limit'  => $limit,
         ];
 
         if (is_array($sort) && ! empty($sort)) {
@@ -97,8 +97,8 @@ class Record extends ApiAbstract
         }
 
         $parameters = [
-            'query' => $query,
-            'limit' => $limit,
+            'query'  => $query,
+            'limit'  => $limit,
             'offset' => $offset,
         ];
 

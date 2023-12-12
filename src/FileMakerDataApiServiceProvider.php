@@ -2,9 +2,9 @@
 
 namespace Flooris\FileMakerDataApi;
 
-use Flooris\FileMakerDataApi\Commands\FileMakerDataApiCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Flooris\FileMakerDataApi\Commands\FileMakerDataApiCommand;
 
 class FileMakerDataApiServiceProvider extends PackageServiceProvider
 {

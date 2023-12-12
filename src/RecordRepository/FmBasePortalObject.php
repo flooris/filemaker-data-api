@@ -20,8 +20,8 @@ abstract class FmBasePortalObject
     public function __construct(
         stdClass $fmResultObject
     ) {
-        $this->recordId = (int) $fmResultObject->recordId;
-        $this->modId = (int) $fmResultObject->modId;
+        $this->recordId  = (int) $fmResultObject->recordId;
+        $this->modId     = (int) $fmResultObject->modId;
         $this->fieldData = $fmResultObject;
     }
 }

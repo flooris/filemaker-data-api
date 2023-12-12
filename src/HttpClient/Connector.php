@@ -2,16 +2,16 @@
 
 namespace Flooris\FileMakerDataApi\HttpClient;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Exception\GuzzleException;
+use Psr\SimpleCache\InvalidArgumentException;
+use Flooris\FileMakerDataApi\FileMakerDataApi as FmClient;
+use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
 use Flooris\FileMakerDataApi\Exceptions\FilemakerDataApiConfigHostMissingException;
 use Flooris\FileMakerDataApi\Exceptions\FilemakerDataApiConfigInvalidConnectionException;
-use Flooris\FileMakerDataApi\FileMakerDataApi as FmClient;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\RequestOptions;
-use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
-use Psr\SimpleCache\InvalidArgumentException;
 
 class Connector
 {
@@ -68,7 +68,7 @@ class Connector
     }
 
     /**
-        * @throws GuzzleException
+     * @throws GuzzleException
      */
     public function getDataContainerToken(string $dataContainerObjectUrl): ?string
     {
@@ -93,8 +93,8 @@ class Connector
     {
         $extraOptions = [];
 
-        if($dataContainerToken) {
-            $extraOptions[RequestOptions::HEADERS] =  [
+        if ($dataContainerToken) {
+            $extraOptions[RequestOptions::HEADERS] = [
                 'Cookie' => [
                     $dataContainerToken,
                 ],
@@ -115,12 +115,12 @@ class Connector
     {
         $options = [
             RequestOptions::HEADERS => [
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json',
+                'Content-Type'  => 'application/json',
+                'Accept'        => 'application/json',
                 'Authorization' => $this->getAuthorizationHeaderValue($sessionToken),
-                'User-Agent' => FmClient::USER_AGENT,
+                'User-Agent'    => FmClient::USER_AGENT,
             ],
-            RequestOptions::QUERY => $query,
+            RequestOptions::QUERY   => $query,
         ];
 
         if ($bodyData) {
@@ -132,12 +132,12 @@ class Connector
 
     private function getBaseUri(): ?string
     {
-        $port = config(sprintf('filemaker.%s.port', $this->configHost));
+        $port     = config(sprintf('filemaker.%s.port', $this->configHost));
         $protocol = config(sprintf('filemaker.%s.protocol', $this->configHost));
-        $host = config(sprintf('filemaker.%s.hostname', $this->configHost));
+        $host     = config(sprintf('filemaker.%s.hostname', $this->configHost));
 
-        if (!$protocol ||
-            !$host
+        if (! $protocol ||
+            ! $host
         ) {
             return null;
         }
@@ -160,7 +160,7 @@ class Connector
             $username = config(sprintf('filemaker.%s.username', $this->configHost));
             $password = config(sprintf('filemaker.%s.password', $this->configHost));
 
-            return 'Basic '.base64_encode("{$username}:{$password}");
+            return 'Basic ' . base64_encode("{$username}:{$password}");
         } catch (InvalidArgumentException $e) {
             // ToDo: handle exception
         }
@@ -186,7 +186,7 @@ class Connector
     {
         $config = config(sprintf('filemaker.%s', $this->configHost));
 
-        if (!$config) {
+        if (! $config) {
             throw new FilemakerDataApiConfigHostMissingException($this->configHost);
         }
 
@@ -199,7 +199,7 @@ class Connector
                 continue;
             }
 
-            if (!$configValue && $throwException) {
+            if (! $configValue && $throwException) {
                 throw new FilemakerDataApiConfigInvalidConnectionException("The key {$configKey} has no value");
             }
         }
