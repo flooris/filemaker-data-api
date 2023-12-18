@@ -35,4 +35,6 @@ abstract class FmBaseObject
 
         return $this->portalData->{$fieldName};
     }
+
+    public abstract function getDataArray(): array;
 }

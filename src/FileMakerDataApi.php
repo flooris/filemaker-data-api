@@ -12,6 +12,9 @@ use Flooris\FileMakerDataApi\Api\MetaData;
 use Psr\SimpleCache\InvalidArgumentException;
 use Flooris\FileMakerDataApi\Api\Authentication;
 use Flooris\FileMakerDataApi\HttpClient\Connector;
+use Flooris\FileMakerDataApi\RecordRepository\FmBaseRepository;
+use Flooris\FileMakerDataApi\RecordRepository\FmObject;
+use Flooris\FileMakerDataApi\RecordRepository\FmObjectRepository;
 use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
 
 class FileMakerDataApi
@@ -34,6 +37,11 @@ class FileMakerDataApi
         if ($this->connector->hasValidConnectionCredentials()) {
             $this->validateSession();
         }
+    }
+
+    public function repo(FmObject $fmObject)
+    {
+        return new FmObjectRepository($this, $fmObject);
     }
 
     public function record($layout = null): Record
