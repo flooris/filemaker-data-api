@@ -12,8 +12,8 @@ use Flooris\FileMakerDataApi\Api\MetaData;
 use Psr\SimpleCache\InvalidArgumentException;
 use Flooris\FileMakerDataApi\Api\Authentication;
 use Flooris\FileMakerDataApi\HttpClient\Connector;
-use Flooris\FileMakerDataApi\RecordRepository\FmBaseRepository;
 use Flooris\FileMakerDataApi\RecordRepository\FmObject;
+use Flooris\FileMakerDataApi\RecordRepository\FmBaseRepository;
 use Flooris\FileMakerDataApi\RecordRepository\FmObjectRepository;
 use Illuminate\Contracts\Cache\Repository as CacheRepositoryInterface;
 
