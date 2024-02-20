@@ -13,8 +13,7 @@
 
 <p align="center">
     <a href="https://packagist.org/packages/flooris/filemaker-data-api">
-        <img src="https://img.shields.io/packagist/dt/flooris/filemaker-data-api
-.svg" alt="Total Downloads">
+        <img src="https://img.shields.io/packagist/dt/flooris/filemaker-data-api.svg" alt="Total Downloads">
     </a>
     <a href="https://github.com/flooris/filemaker-data-api/releases">
         <img src="https://img.shields.io/packagist/v/flooris/filemaker-data-api.svg" alt="Latest Release">
