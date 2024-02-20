@@ -87,14 +87,9 @@ This will get the published config file with the following contents:
 ```php
 return [
     'default'  => [
-        'hostname' => env('FM_HOSTNAME=192.168.10.33
-FM_PORT=80
-FM_DATABASE=Hurricane
-FM_USERNAME=
-FM_PASSWORD='),
+        'hostname' => env('FM_HOSTNAME'),
         'port'     => env('FM_PORT', null),
         'protocol' => env('FM_PROTOCOL', 'https://'),
-
         'version'  => env('FM_VERSION', 'v1'), // v1 or vLatest
         'database' => env('FM_DATABASE', 'default'),
 
