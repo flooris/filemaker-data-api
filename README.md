@@ -1,8 +1,8 @@
 <p align="center">
-  <a href="https://github.com/flooris/filemaker-data-api" target="_blank">
+  <a href="https://github.com/flooris/filemaker-data-api#gh-light-mode-only" target="_blank">
     <img src="./.github/logo-light.svg" alt="Filemaker Data API logo" width="300">
   </a>
-  <a href="https://github.com/flooris/filemaker-data-api" target="_blank">
+  <a href="https://github.com/flooris/filemaker-data-api#gh-dark-mode-only" target="_blank">
     <img src="./.github/logo-dark.svg" alt="Filemaker Data API logo" width="300">
   </a>
 </p>
