@@ -13,9 +13,10 @@
     "require": {
         "php": ">=8.0",
         "guzzlehttp/guzzle": "^7.5",
-        "illuminate/config": "*",
-        "illuminate/support": "*",
         "nesbot/carbon": "*"
+    },
+    "replace": {
+        "illuminate/support": "*"
     },
     "config": {
         "sort-packages": true
